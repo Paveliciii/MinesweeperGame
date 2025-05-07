@@ -176,7 +176,7 @@ function FixedMinesweeper() {
   };
   
   // Проверка на победу
-  const checkWin = () => {
+  const checkWin = useCallback(() => {
     // Проверяем все ли мины помечены флагами
     let allMinesFlagged = true;
     let allSafeCellsRevealed = true;
@@ -202,9 +202,9 @@ function FixedMinesweeper() {
         gameWon: true
       }));
       stopTimer();
-      sendScoreToTelegram(true, time);
+      sendGameResult(true);
     }
-  };
+  }, [stopTimer, sendGameResult]);
 
   // Обработка chord click (клик по открытой цифре)
   const handleChordClick = (x: number, y: number) => {
@@ -343,7 +343,7 @@ function FixedMinesweeper() {
         )
       }));
       stopTimer();
-      sendScoreToTelegram(false, time);
+      sendGameResult(false);
       return;
     }
     
@@ -505,6 +505,56 @@ function FixedMinesweeper() {
       }));
     }
   }, [gameState.width, gameState.height, gameState.mineCount]);
+
+  useEffect(() => {
+    // Расширяем окно Telegram WebApp при запуске
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.expand();
+      
+      // Устанавливаем цвета темы из Telegram
+      document.documentElement.style.setProperty(
+        '--tg-theme-bg-color',
+        window.Telegram.WebApp.backgroundColor || '#ffffff'
+      );
+      document.documentElement.style.setProperty(
+        '--tg-theme-text-color',
+        window.Telegram.WebApp.textColor || '#000000'
+      );
+      document.documentElement.style.setProperty(
+        '--tg-theme-button-color',
+        window.Telegram.WebApp.buttonColor || '#3390ec'
+      );
+      document.documentElement.style.setProperty(
+        '--tg-theme-button-text-color',
+        window.Telegram.WebApp.buttonTextColor || '#ffffff'
+      );
+    }
+  }, []);
+
+  // Добавляем функцию отправки результатов
+  const sendGameResult = useCallback((won: boolean) => {
+    if (window.Telegram?.WebApp) {
+      const result = {
+        event: 'gameOver',
+        won,
+        time,
+        difficulty: `${gameState.width}x${gameState.height}`,
+        mineCount: gameState.mineCount
+      };
+
+      // Отправляем результат в бот
+      window.Telegram.WebApp.sendData(JSON.stringify(result));
+
+      // Также отправляем на сервер для таблицы лидеров
+      fetch('/api/score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result)
+      }).catch(console.error);
+    }
+  }, [gameState.width, gameState.height, gameState.mineCount, time]);
   
   // Если выбор сложности, показываем меню
   if (gameState.showDifficultySelection) {

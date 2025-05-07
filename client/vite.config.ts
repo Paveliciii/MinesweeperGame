@@ -1,14 +1,20 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
   build: {
     outDir: 'dist',
-    assetsDir: 'assets',
-    emptyOutDir: true,
+    emptyOutDir: true
   },
   server: {
-    port: 3000,
+    port: 3000
+  },
+  base: './',
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
+    }
   }
 });
