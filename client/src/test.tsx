@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import './minesweeper.css';
 
+interface CellProps {
+  isRevealed: boolean;
+  isMine: boolean;
+  isFlagged: boolean;
+  mineCount: number;
+  onClick: () => void;
+  onRightClick: () => void;
+}
+
 // Простой компонент ячейки
-function Cell({ isRevealed, isMine, isFlagged, mineCount, onClick, onRightClick }) {
+function Cell({ isRevealed, isMine, isFlagged, mineCount, onClick, onRightClick }: CellProps) {
   let content = "";
   let cellClass = "cell";
 
@@ -21,7 +30,7 @@ function Cell({ isRevealed, isMine, isFlagged, mineCount, onClick, onRightClick 
     }
   }
 
-  const handleRightClick = (e) => {
+  const handleRightClick = (e: React.MouseEvent) => {
     e.preventDefault();
     onRightClick();
   };
@@ -55,7 +64,7 @@ function GameBoard() {
   );
 
   // Обработчик клика по ячейке
-  const handleCellClick = (x, y) => {
+  const handleCellClick = (x: number, y: number) => {
     if (cells[y][x].isFlagged) return;
     
     setCells(prevCells => {
@@ -66,7 +75,7 @@ function GameBoard() {
   };
 
   // Обработчик правого клика по ячейке
-  const handleCellRightClick = (x, y) => {
+  const handleCellRightClick = (x: number, y: number) => {
     setCells(prevCells => {
       const newCells = [...prevCells.map(row => [...row])];
       newCells[y][x].isFlagged = !newCells[y][x].isFlagged;
@@ -113,4 +122,9 @@ function App() {
 }
 
 // Рендерим приложение
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Failed to find the root element');
+}
+
+createRoot(rootElement).render(<App />);

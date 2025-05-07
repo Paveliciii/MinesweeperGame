@@ -1,4 +1,4 @@
-interface GameState {
+export interface GameState {
   width: number;
   height: number;
   mineCount: number;
@@ -10,4 +10,16 @@ interface GameState {
   revealed: boolean[][];
   flags: boolean[][];
   isFlagMode?: boolean;
+}
+
+export interface CellProps {
+  x: number;
+  y: number;
+  isRevealed: boolean;
+  isMine: boolean;
+  isFlagged: boolean;
+  mineCount: number;
+  gameOver: boolean;
+  onClick: () => void;
+  onRightClick: (e: React.MouseEvent) => void;
 }

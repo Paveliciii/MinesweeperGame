@@ -29,9 +29,9 @@ function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps)
   
   for (let y = 1; y <= gameState.height; y++) {
     for (let x = 1; x <= gameState.width; x++) {
-      const isMine = !!gameState.mines[x]?.[y];
-      const isRevealed = !!gameState.revealed[x]?.[y];
-      const isFlagged = !!gameState.flags[x]?.[y];
+      const isMine = Boolean(gameState.mines[x]?.[y]);
+      const isRevealed = Boolean(gameState.revealed[x]?.[y]);
+      const isFlagged = Boolean(gameState.flags[x]?.[y]);
       
       // Получаем количество соседних мин для открытых ячеек
       let mineCount = 0;

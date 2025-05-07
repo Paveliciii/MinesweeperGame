@@ -16,14 +16,14 @@ app.use(express.urlencoded({ extended: false }));
 
 // Middleware для проверки данных от Telegram
 const validateTelegramWebAppData = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const { initData } = req.query;
+  const initData = req.query.initData || req.headers['x-telegram-init-data'];
   
   if (!initData) {
     return next();
   }
 
   try {
-    const urlParams = new URLSearchParams(initData as string);
+    const urlParams = new URLSearchParams(initData.toString());
     const hash = urlParams.get('hash');
     urlParams.delete('hash');
 
@@ -46,6 +46,7 @@ const validateTelegramWebAppData = (req: express.Request, res: express.Response,
       res.status(401).send('Unauthorized');
     }
   } catch (e) {
+    console.error('Validation error:', e);
     res.status(401).send('Invalid data');
   }
 };
@@ -125,4 +126,12 @@ app.use((req, res, next) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+// Маршрут для сохранения результатов (можно добавить позже)
+app.post('/api/score', express.json(), (req, res) => {
+  const { score, time, won } = req.body;
+  // Здесь можно добавить сохранение результатов
+  console.log('Received score:', { score, time, won });
+  res.json({ success: true });
 });

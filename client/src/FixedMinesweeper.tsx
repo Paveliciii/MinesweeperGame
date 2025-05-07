@@ -25,8 +25,40 @@ const difficulties = {
 
 function FixedMinesweeper() {
   const isMobile = useMobile();
-  // Добавляем состояние для режима установки флажков
   const [isFlagMode, setIsFlagMode] = useState(false);
+  const [time, setTime] = useState('00:00');
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [intervalId, setIntervalId] = useState<number | null>(null);
+  const [touchTimeout, setTouchTimeout] = useState<number | null>(null);
+  const [touchStartPos, setTouchStartPos] = useState<{ x: number, y: number } | null>(null);
+
+  // Определяем sendGameResult до его использования
+  const sendGameResult = useCallback((won: boolean) => {
+    if (window.Telegram?.WebApp) {
+      const result = {
+        event: 'gameOver',
+        won,
+        time,
+        difficulty: `${gameState.width}x${gameState.height}`,
+        mineCount: gameState.mineCount
+      };
+
+      try {
+        window.Telegram.WebApp.sendData(JSON.stringify(result));
+      } catch (error) {
+        console.error('Error sending data to Telegram:', error);
+      }
+
+      // Также отправляем на сервер для таблицы лидеров
+      fetch('/api/score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result)
+      }).catch(console.error);
+    }
+  }, [time]);
 
   // Состояние игры
   const [gameState, setGameState] = useState<GameState>(() => {
@@ -315,7 +347,7 @@ function FixedMinesweeper() {
   };
 
   // Обработка клика по ячейке
-  const handleCellClick = (x: number, y: number) => {
+  const handleCellClick = useCallback((x: number, y: number) => {
     if (gameState.gameOver || gameState.flags[x][y]) return;
 
     // Если кликнули по открытой ячейке с цифрой
@@ -400,7 +432,7 @@ function FixedMinesweeper() {
 
     // Проверяем победу после хода
     checkWin();
-  };
+  }, [gameState, sendGameResult, stopTimer]);
   
   // Обработка правого клика (установка флага)
   const handleCellRightClick = (x: number, y: number, e: React.MouseEvent) => {
@@ -531,31 +563,6 @@ function FixedMinesweeper() {
     }
   }, []);
 
-  // Добавляем функцию отправки результатов
-  const sendGameResult = useCallback((won: boolean) => {
-    if (window.Telegram?.WebApp) {
-      const result = {
-        event: 'gameOver',
-        won,
-        time,
-        difficulty: `${gameState.width}x${gameState.height}`,
-        mineCount: gameState.mineCount
-      };
-
-      // Отправляем результат в бот
-      window.Telegram.WebApp.sendData(JSON.stringify(result));
-
-      // Также отправляем на сервер для таблицы лидеров
-      fetch('/api/score', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(result)
-      }).catch(console.error);
-    }
-  }, [gameState.width, gameState.height, gameState.mineCount, time]);
-  
   // Если выбор сложности, показываем меню
   if (gameState.showDifficultySelection) {
     return (
