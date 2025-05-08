@@ -92,10 +92,10 @@ function FixedMinesweeper() {
 
   // Состояние игры
   const [gameState, setGameState] = useState<GameState>(() => {
-    // Инициализируем с размерами по умолчанию
-    const width = 8;
-    const height = 8;
-    const mineCount = 10;
+    // Инициализируем с пустыми размерами и показываем выбор сложности
+    const width = 0;
+    const height = 0;
+    const mineCount = 0;
     
     // Расширяем окно Telegram WebApp при запуске
     if (window.Telegram?.WebApp) {
@@ -112,7 +112,7 @@ function FixedMinesweeper() {
       );
     }
     
-    // Создаем пустые массивы с правильными размерами (используя 1-индексированную сетку)
+    // Создаем пустые массивы
     const mines = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
     const revealed = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
     const flags = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
@@ -124,7 +124,7 @@ function FixedMinesweeper() {
       remainingMines: mineCount,
       gameOver: false,
       gameWon: false,
-      showDifficultySelection: false,
+      showDifficultySelection: true, // Устанавливаем true для показа окна выбора сложности
       mines,
       revealed,
       flags
