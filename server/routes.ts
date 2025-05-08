@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { Router } from 'express';
-import type { GameScore, CustomRequest } from './types';
+import type { GameScore, CustomRequest } from './types.js';
 
 const router = Router();
 const scores: GameScore[] = [];

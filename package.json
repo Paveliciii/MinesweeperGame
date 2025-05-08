@@ -1,13 +1,16 @@
 {
   "name": "minesweeper-tg",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
+    "dev": "npm run dev:client & npm run dev:server",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
     "build": "npm run build:client && npm run build:server",
     "build:client": "cd client && npm install && npm run build",
-    "build:server": "tsc -p tsconfig.server.json",
-    "start": "node --loader ts-node/esm server/index.ts",
-    "dev": "nodemon --exec node --loader ts-node/esm server/index.ts"
+    "build:server": "cd server && npm install && npm run build",
+    "start": "cd server && npm start"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.13",
@@ -22,5 +25,8 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

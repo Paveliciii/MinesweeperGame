@@ -5,9 +5,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createHash, createHmac } from 'crypto';
 import { config } from 'dotenv';
-import type { CustomRequest } from './types';
+import type { CustomRequest } from './types.js';
 
-// Загружаем переменные окружения
+// Загружаем конфигурацию из .env файла
 config();
 
 const __filename = fileURLToPath(import.meta.url);
