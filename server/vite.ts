@@ -1,7 +1,7 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer as createViteServer, createLogger } from "vite";
+import { createServer as createViteServer, createLogger, type Logger } from "vite";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
 import { fileURLToPath } from 'url';
@@ -22,7 +22,17 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions = {
+  interface ViteServerOptions {
+    middlewareMode: boolean;
+    hmr: { server: Server };
+    allowedHosts: string[];
+  }
+
+  interface CustomLogger extends Logger {
+    error: (msg: string, options?: any) => void;
+  }
+
+  const serverOptions: ViteServerOptions = {
     middlewareMode: true,
     hmr: { server },
     allowedHosts: ['localhost'],
@@ -32,11 +42,17 @@ export async function setupVite(app: Express, server: Server) {
     configFile: false,
     customLogger: {
       ...viteLogger,
-      error: (msg, options) => {
+      info: viteLogger.info.bind(viteLogger),
+      warn: viteLogger.warn.bind(viteLogger),
+      warnOnce: viteLogger.warnOnce.bind(viteLogger),
+      clearScreen: viteLogger.clearScreen.bind(viteLogger),
+      hasErrorLogged: viteLogger.hasErrorLogged,
+      hasWarned: viteLogger.hasWarned,
+      error: (msg: string, options?: any) => {
         viteLogger.error(msg, options);
         process.exit(1);
       },
-    },
+    } as CustomLogger,
     server: serverOptions,
     appType: "custom",
     root: path.resolve(__dirname, "..", "client"),

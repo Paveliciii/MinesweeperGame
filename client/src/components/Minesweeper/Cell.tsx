@@ -5,10 +5,15 @@ import { useMobile } from "../../hooks/use-mobile";
 declare global {
   interface Window {
     Telegram?: {
-      WebApp?: {
+      WebApp: {
         expand: () => void;
         showAlert: (message: string) => void;
         platform: string;
+        sendData?: (data: string) => void;
+        backgroundColor?: string;
+        textColor?: string;
+        buttonColor?: string;
+        buttonTextColor?: string;
       };
     };
   }

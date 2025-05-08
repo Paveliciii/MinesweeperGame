@@ -1,4 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
+// Extend the Telegram WebApp type to include sendData
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp: {
+        expand: () => void;
+        showAlert: (message: string) => void;
+        platform: string;
+        sendData?: (data: string) => void;
+        backgroundColor?: string;
+        textColor?: string;
+        buttonColor?: string;
+        buttonTextColor?: string;
+      };
+    };
+  }
+}
 import { useMobile } from './hooks/use-mobile';
 import './minesweeper.css';
 
@@ -44,7 +62,9 @@ function FixedMinesweeper() {
       };
 
       try {
-        window.Telegram.WebApp.sendData(JSON.stringify(result));
+        if (window.Telegram.WebApp.sendData) {
+          window.Telegram.WebApp.sendData(JSON.stringify(result));
+        }
       } catch (error) {
         console.error('Error sending data to Telegram:', error);
       }
@@ -102,13 +122,8 @@ function FixedMinesweeper() {
   });
   
   // Время
-  const [time, setTime] = useState('00:00');
-  const [startTime, setStartTime] = useState<number | null>(null);
-  const [intervalId, setIntervalId] = useState<number | null>(null);
 
-  // В начале файла, где определены другие состояния, добавляем:
-  const [touchTimeout, setTouchTimeout] = useState<number | null>(null);
-  const [touchStartPos, setTouchStartPos] = useState<{ x: number, y: number } | null>(null);
+  // Duplicate declaration removed
 
   // Функция форматирования времени
   const formatTime = (ms: number) => {
@@ -528,7 +543,7 @@ function FixedMinesweeper() {
         ? `🎉 Победа! Время: ${time}`
         : `💣 Игра окончена. Время: ${time}`;
       
-      window.Telegram.WebApp.sendData(JSON.stringify({
+      window.Telegram.WebApp.sendData?.(JSON.stringify({
         event: 'gameOver',
         won,
         time,

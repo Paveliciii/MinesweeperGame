@@ -61,7 +61,7 @@ function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps)
           isMine={isMine}
           isFlagged={isFlagged}
           mineCount={mineCount}
-          gameOver={gameState.gameOver}
+          gameOver={gameState.gameOver ?? false}
           onClick={() => onCellClick(x, y)}
           onRightClick={(e) => onCellRightClick(x, y, e)}
         />
