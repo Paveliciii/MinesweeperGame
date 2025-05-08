@@ -4,22 +4,32 @@ import { setupVite, serveStatic, log } from "./vite.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createHash, createHmac } from 'crypto';
+import dotenv from 'dotenv';
+
+// Загружаем переменные окружения
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Middleware для проверки данных от Telegram
-const validateTelegramWebAppData = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const initData = req.query.initData || req.headers['x-telegram-init-data'];
+const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunction) => {
+  const initData = req.headers['x-telegram-init-data'];
   
   if (!initData) {
+    console.log('No initData provided');
     return next();
+  }
+
+  if (!process.env.BOT_TOKEN) {
+    console.error('BOT_TOKEN is not set in environment variables');
+    return res.status(500).json({ error: 'Server configuration error' });
   }
 
   try {
@@ -33,7 +43,7 @@ const validateTelegramWebAppData = (req: express.Request, res: express.Response,
       .join('\n');
 
     const secret = createHash('sha256')
-      .update(process.env.BOT_TOKEN || '')
+      .update(process.env.BOT_TOKEN)
       .digest();
 
     const hmac = createHmac('sha256', secret)
@@ -41,18 +51,21 @@ const validateTelegramWebAppData = (req: express.Request, res: express.Response,
       .digest('hex');
 
     if (hmac === hash) {
+      console.log('Telegram data validation successful');
+      req.telegramData = Object.fromEntries(urlParams.entries());
       next();
     } else {
-      res.status(401).send('Unauthorized');
+      console.error('Hash validation failed');
+      res.status(401).json({ error: 'Unauthorized' });
     }
   } catch (e) {
     console.error('Validation error:', e);
-    res.status(401).send('Invalid data');
+    res.status(401).json({ error: 'Invalid data' });
   }
 };
 
-// Используем middleware для всех запросов
-app.use(validateTelegramWebAppData);
+// Используем middleware для всех API маршрутов
+app.use('/api', validateTelegramWebAppData);
 
 // Отдаем статические файлы из папки dist/public
 app.use(express.static(path.join(__dirname, '../dist/public')));
@@ -95,27 +108,12 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
   server.listen({
     port,
     host: "0.0.0.0"
@@ -130,4 +128,12 @@ app.post('/api/score', express.json(), (req, res) => {
   // Здесь можно добавить сохранение результатов
   console.log('Received score:', { score, time, won });
   res.json({ success: true });
+});
+
+// Error handling middleware
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error('Error:', err);
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(status).json({ error: message });
 });

@@ -2,11 +2,10 @@ interface TelegramWebApp {
   expand: () => void;
   showAlert: (message: string) => void;
   platform: string;
-  backgroundColor: string;
-  textColor: string;
-  buttonColor: string;
-  buttonTextColor: string;
-  sendData: (data: string) => void;
+  backgroundColor?: string;
+  textColor?: string;
+  buttonColor?: string;
+  buttonTextColor?: string;
   initData: string;
   initDataUnsafe: {
     query_id?: string;
@@ -17,9 +16,10 @@ interface TelegramWebApp {
       username?: string;
       language_code?: string;
     };
-    auth_date?: string;
-    hash?: string;
+    auth_date: number;
+    hash: string;
   };
+  sendData?: (data: string) => void;
   ready: () => void;
   close: () => void;
 }

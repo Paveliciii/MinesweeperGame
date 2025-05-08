@@ -14,7 +14,8 @@
     "wouter": "^2.12.1",
     "@tanstack/react-query": "^5.17.19",
     "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "class-variance-authority": "^0.7.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
