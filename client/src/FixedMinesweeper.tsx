@@ -55,7 +55,6 @@ function FixedMinesweeper() {
   const isMobile = useMobile();
   const [isFlagMode, setIsFlagMode] = useState(false);
   const [time, setTime] = useState('00:00');
-  const [startTime, setStartTime] = useState<number | null>(null);
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [touchTimeout, setTouchTimeout] = useState<number | null>(null);
   const [touchStartPos, setTouchStartPos] = useState<{ x: number, y: number } | null>(null);

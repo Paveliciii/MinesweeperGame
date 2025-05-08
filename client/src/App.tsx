@@ -1,8 +1,23 @@
-import React from 'react';
-import FixedMinesweeper from './FixedMinesweeper';
+import { useMinesweeper } from './hooks/useMinesweeper';
+import { GameBoard } from './components/Minesweeper/GameBoard';
+import './App.css';
 
-export function App() {
-  return <FixedMinesweeper />;
+function App() {
+  const {
+    gameState,
+    handleCellClick,
+    handleCellRightClick
+  } = useMinesweeper();
+
+  return (
+    <div className="App">
+      <GameBoard 
+        gameState={gameState}
+        onCellClick={handleCellClick}
+        onCellRightClick={handleCellRightClick}
+      />
+    </div>
+  );
 }
 
 export default App;

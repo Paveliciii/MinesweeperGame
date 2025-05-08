@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +10,7 @@ import { Button } from "../../components/ui/button";
 interface GameOverModalProps {
   isVisible: boolean;
   isVictory: boolean;
-  gameTime: number;
+  gameTime: string;
   onClose: () => void;
   onNewGame: () => void;
 }
@@ -23,7 +22,8 @@ export default function GameOverModal({
   onClose,
   onNewGame
 }: GameOverModalProps) {
-  if (!isVisible) return null; // Don't render if not visible
+  if (!isVisible) return null;
+  
   return (
     <Dialog open={isVisible} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md border-2 shadow-lg z-50">

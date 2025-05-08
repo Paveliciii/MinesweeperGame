@@ -4,11 +4,11 @@ import { setupVite, serveStatic, log } from "./vite.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createHash, createHmac } from 'crypto';
-import { config } from 'dotenv';
+import dotenv from 'dotenv';
 import type { CustomRequest } from './types.js';
 
 // Загружаем конфигурацию из .env файла
-config();
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -2,7 +2,7 @@ services:
   - type: web
     name: minesweeper-tg
     env: node
-    nodeVersion: 20.11.0
+    nodeVersion: 24.0.0
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
