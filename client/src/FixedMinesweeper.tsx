@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-// Extend the Telegram WebApp type to include sendData
+// Extend the Telegram WebApp type
 declare global {
   interface Window {
     Telegram?: {
@@ -13,10 +13,12 @@ declare global {
         textColor?: string;
         buttonColor?: string;
         buttonTextColor?: string;
+        initData?: string;
       };
     };
   }
 }
+
 import { useMobile } from './hooks/use-mobile';
 import './minesweeper.css';
 import {
@@ -59,51 +61,6 @@ function FixedMinesweeper() {
   const [touchStartPos, setTouchStartPos] = useState<{ x: number, y: number } | null>(null);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
 
-  // Определяем sendGameResult до его использования
-  const sendGameResult = useCallback(async (won: boolean) => {
-    setIsGameOverModalVisible(true);
-    
-    const result = {
-      time,
-      difficulty: `${gameState.width}x${gameState.height}`,
-      mineCount: gameState.mineCount,
-      won
-    };
-
-    if (window.Telegram?.WebApp) {
-      try {
-        // Отправляем данные в Telegram
-        window.Telegram.WebApp.sendData?.(JSON.stringify({
-          event: 'gameOver',
-          ...result
-        }));
-
-        // Отправляем на сервер
-        const response = await fetch('/api/score', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Telegram-Init-Data': window.Telegram.WebApp.initData
-          },
-          body: JSON.stringify(result)
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          console.error('Error sending score:', error);
-          window.Telegram.WebApp.showAlert?.(
-            'Не удалось сохранить результат. Пожалуйста, попробуйте позже.'
-          );
-        }
-      } catch (error) {
-        console.error('Error sending data:', error);
-        window.Telegram.WebApp.showAlert?.(
-          'Произошла ошибка при отправке результата.'
-        );
-      }
-    }
-  }, [gameState.width, gameState.height, gameState.mineCount, time]);
-
   // Состояние игры
   const [gameState, setGameState] = useState<GameState>(() => {
     // Инициализируем с пустыми размерами и показываем выбор сложности
@@ -138,13 +95,58 @@ function FixedMinesweeper() {
       remainingMines: mineCount,
       gameOver: false,
       gameWon: false,
-      showDifficultySelection: true, // Устанавливаем true для показа окна выбора сложности
+      showDifficultySelection: true,
       mines,
       revealed,
       flags
     };
   });
-  
+
+  // Определяем sendGameResult до его использования
+  const sendGameResult = useCallback(async (won: boolean) => {
+    setIsGameOverModalVisible(true);
+    
+    const result = {
+      time,
+      difficulty: `${gameState.width}x${gameState.height}`,
+      mineCount: gameState.mineCount,
+      won
+    };
+
+    if (window.Telegram?.WebApp) {
+      try {
+        // Отправляем данные в Telegram
+        window.Telegram.WebApp.sendData?.(JSON.stringify({
+          event: 'gameOver',
+          ...result
+        }));
+
+        // Отправляем на сервер
+        const response = await fetch('/api/score', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Telegram-Init-Data': window.Telegram.WebApp.initData || ''
+          },
+          body: JSON.stringify(result)
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Error sending score:', error);
+          window.Telegram.WebApp.showAlert?.(
+            'Не удалось сохранить результат. Пожалуйста, попробуйте позже.'
+          );
+        }
+      } catch (error) {
+        console.error('Error sending data:', error);
+        window.Telegram.WebApp.showAlert?.(
+          'Произошла ошибка при отправке результата.'
+        );
+      }
+    }
+  }, [gameState.width, gameState.height, gameState.mineCount, time]);
+
   // Время
 
   // Duplicate declaration removed

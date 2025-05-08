@@ -4,16 +4,31 @@ import { setupVite, serveStatic, log } from "./vite.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createHash, createHmac } from 'crypto';
-import dotenv from 'dotenv';
+import { config } from 'dotenv';
+import type { CustomRequest } from './types';
 
 // Загружаем переменные окружения
-dotenv.config();
+config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+// Добавляем тип для Request чтобы включить telegramData
+declare global {
+  namespace Express {
+    interface Request {
+      telegramData?: {
+        user?: {
+          id: number;
+          username?: string;
+        };
+      };
+    }
+  }
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -52,7 +67,10 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
 
     if (hmac === hash) {
       console.log('Telegram data validation successful');
-      req.telegramData = Object.fromEntries(urlParams.entries());
+      // Парсим данные пользователя из initData
+      const userDataStr = urlParams.get('user') || '{}';
+      const userData = JSON.parse(userDataStr);
+      req.telegramData = { user: userData };
       next();
     } else {
       console.error('Hash validation failed');
