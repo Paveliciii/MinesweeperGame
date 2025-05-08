@@ -1,5 +1,6 @@
 import { memo, useState, useEffect } from "react";
 import { useMobile } from "../../hooks/use-mobile";
+import type { CellProps } from "../../types/game";
 
 // Ensure the Telegram Web App API is defined
 declare global {
@@ -14,6 +15,7 @@ declare global {
         textColor?: string;
         buttonColor?: string;
         buttonTextColor?: string;
+        initData?: string;
       };
     };
   }
@@ -22,18 +24,6 @@ declare global {
 // Initialize Telegram Web App if available
 if (window.Telegram?.WebApp) {
   window.Telegram.WebApp.expand();
-}
-
-interface CellProps {
-  x: number;
-  y: number;
-  isRevealed: boolean;
-  isMine: boolean;
-  isFlagged: boolean;
-  mineCount: number;
-  gameOver: boolean;
-  onClick: () => void;
-  onRightClick: (e: React.MouseEvent) => void;
 }
 
 function Cell({

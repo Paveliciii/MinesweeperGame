@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { Router } from 'express';
 import type { GameScore, CustomRequest } from './types';
@@ -7,17 +7,17 @@ const router = Router();
 const scores: GameScore[] = [];
 
 // Маршрут для сохранения результатов игры
-router.post('/api/score', (req: CustomRequest, res) => {
+router.post('/api/score', (req: Request, res: Response) => {
   const { time, difficulty, mineCount, won } = req.body;
-  const user = req.telegramData?.user;
+  const telegramData = (req as CustomRequest).telegramData;
 
-  if (!user) {
+  if (!telegramData?.user) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const score: GameScore = {
-    userId: user.id,
-    username: user.username,
+    userId: telegramData.user.id,
+    username: telegramData.user.username,
     time,
     difficulty,
     mineCount,
