@@ -51,43 +51,37 @@ function Cell({
   const [longPressTimeout, setLongPressTimeout] = useState<number | null>(null);
   const [isLongPress, setIsLongPress] = useState(false);
 
-  // Determine cell content and classes
   let content = "";
   let cellClass = "cell";
 
-  // Mobile touch handlers
-  const handleTouchStart = () => {
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
     if (gameOver) return;
 
-    // Start long press timer
     const timeout = window.setTimeout(() => {
       setIsLongPress(true);
-      // Simulate right click for flag placement
       if ((isFlagged || !isRevealed) && onRightClick) {
         onRightClick({} as React.MouseEvent);
       }
-    }, 500); // 500ms long press
+    }, 500);
 
     setLongPressTimeout(timeout);
   };
 
-  const handleTouchEnd = () => {
-    // Clear the timeout
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
     if (longPressTimeout) {
       clearTimeout(longPressTimeout);
       setLongPressTimeout(null);
     }
 
-    // Only trigger click if it was not a long press
     if (!isLongPress && !gameOver) {
       onClick();
     }
 
-    // Reset long press state
     setIsLongPress(false);
   };
 
-  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (longPressTimeout) {
@@ -96,16 +90,13 @@ function Cell({
     };
   }, [longPressTimeout]);
 
-  // Handle right click
   const handleRightClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Don't allow flagging revealed cells, but always allow removing flags
-    if ((isFlagged || !isRevealed) && onRightClick) {
+    if (!isRevealed || isFlagged) {
       onRightClick(e);
     }
   };
 
-  // Styling logic
   if (isFlagged) {
     content = "🚩";
     cellClass += " flagged";
@@ -120,37 +111,23 @@ function Cell({
     }
   }
 
-  // Show mines at game over
   if (gameOver && isMine && !isFlagged) {
     content = "💣";
     cellClass = "cell mine revealed";
   }
 
-  // Add mobile specific props
   const mobileProps = isMobile ? {
     onTouchStart: handleTouchStart,
     onTouchEnd: handleTouchEnd,
-    onTouchMove: () => {}, // Prevent scrolling issues
   } : {};
-
-  // Add instruction for mobile users
-  let titleText = '';
-  if (isRevealed && mineCount > 0) {
-    titleText = 'Click to reveal adjacent cells if enough flags are placed';
-  } else if (isRevealed) {
-    titleText = 'Cannot flag revealed cells';
-  } else if (isMobile) {
-    titleText = 'Long press to place/remove flag';
-  }
 
   return (
     <div
       className={cellClass}
       data-x={x}
       data-y={y}
-      onClick={isMobile ? undefined : onClick} // Disable normal click on mobile
+      onClick={isMobile ? undefined : onClick}
       onContextMenu={handleRightClick}
-      title={titleText}
       {...mobileProps}
     >
       {content}

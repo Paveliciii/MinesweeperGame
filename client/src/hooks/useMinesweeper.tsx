@@ -24,37 +24,25 @@ export interface GameState {
 }
 
 export function useMinesweeper() {
-  // Game state
-  const [gameState, setGameState] = useState<GameState>(() => {
-    // Инициализируем с размерами по умолчанию
-    const width = 10;
-    const height = 10;
-    const mineCount = 15;
-    
-    // Создаем пустые массивы с правильными размерами (используя 1-индексированную сетку)
-    const mines = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
-    const revealed = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
-    const flags = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
-    
-    return {
-      width,
-      height,
-      mineCount,
-      remainingMines: mineCount,
-      gameOver: false,
-      gameWon: false,
-      isFlagMode: false,
-      showDifficultySelection: true,
-      mines,
-      revealed,
-      flags
-    };
+  const [gameState, setGameState] = useState<GameState>({
+    width: 0,
+    height: 0,
+    mineCount: 0,
+    remainingMines: 0,
+    gameOver: false,
+    gameWon: false,
+    showDifficultySelection: true,
+    mines: [],
+    revealed: [],
+    flags: [],
+    isFlagMode: false
   });
 
-  // Time tracking
   const [gameStarted, setGameStarted] = useState(false);
-  const [startTime, setStartTime] = useState(0);
-  const [time, setTime] = useState('00:00');
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [time, setTime] = useState(0);
+
+  // Time tracking
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
 
   // UI state
@@ -66,7 +54,7 @@ export function useMinesweeper() {
   const updateTimer = useCallback(() => {
     if (!gameStarted || gameState.gameOver) return;
     
-    const currentTime = Date.now() - startTime;
+    const currentTime = Date.now() - (startTime || 0);
     setTime(formatTime(currentTime));
   }, [gameStarted, gameState.gameOver, startTime]);
 
@@ -514,19 +502,31 @@ export function useMinesweeper() {
       return;
     }
     
-    // Handle first click - initialize mines
+    // Handle first click
     if (!gameStarted) {
       setGameStarted(true);
       const newStartTime = Date.now();
       setStartTime(newStartTime);
-      startTimer();
-      
-      // Place mines avoiding first click and its surroundings
-      const newMines = [...gameState.mines.map(row => [...row])];
-      placeMines(newMines, gameState.width, gameState.height, gameState.mineCount, x, y);
-      
-      setGameState(prevState => ({
-        ...prevState,
+
+      // Place mines avoiding first click
+      const newMines = Array(gameState.width + 1).fill(null)
+        .map(() => Array(gameState.height + 1).fill(false));
+
+      let minesToPlace = gameState.mineCount;
+      while (minesToPlace > 0) {
+        const mx = Math.floor(Math.random() * gameState.width) + 1;
+        const my = Math.floor(Math.random() * gameState.height) + 1;
+        
+        // Avoid placing mine at click position or adjacent cells
+        if (!newMines[mx][my] && 
+            (Math.abs(mx - x) > 1 || Math.abs(my - y) > 1)) {
+          newMines[mx][my] = true;
+          minesToPlace--;
+        }
+      }
+
+      setGameState(prev => ({
+        ...prev,
         mines: newMines
       }));
     }

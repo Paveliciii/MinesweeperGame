@@ -75,20 +75,38 @@
 }
 
 /* Minesweeper specific styles */
-.cell-1 { color: #0000FF; }
-.cell-2 { color: #008000; }
-.cell-3 { color: #FF0000; }
-.cell-4 { color: #000080; }
-.cell-5 { color: #800000; }
-.cell-6 { color: #008080; }
-.cell-7 { color: #000000; }
-.cell-8 { color: #808080; }
-
 .cell {
-  width: 40px;
-  height: 40px;
-  transition: all 0.2s;
-  user-select: none;
+  @apply flex items-center justify-center w-10 h-10 text-lg font-bold cursor-pointer rounded border-2 border-gray-400 bg-gray-100 shadow-sm select-none transition-all duration-200;
+}
+
+.cell:hover:not(.revealed):not(.flagged) {
+  @apply bg-gray-200 transform scale-105;
+}
+
+.cell.revealed {
+  @apply bg-gray-200 border-gray-300 shadow-inner;
+}
+
+.cell.flagged {
+  @apply bg-blue-50 border-blue-500;
+}
+
+.cell.mine {
+  @apply bg-red-500 text-white border-red-700;
+}
+
+.cell-1 { @apply text-blue-600; }
+.cell-2 { @apply text-green-600; }
+.cell-3 { @apply text-red-600; }
+.cell-4 { @apply text-blue-900; }
+.cell-5 { @apply text-red-900; }
+.cell-6 { @apply text-teal-600; }
+.cell-7 { @apply text-black; }
+.cell-8 { @apply text-gray-600; }
+
+.game-board {
+  @apply grid gap-1 p-2 bg-gray-300 rounded-lg shadow-inner mx-auto;
+  width: fit-content;
 }
 
 @media (max-width: 375px) {
