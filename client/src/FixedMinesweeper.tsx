@@ -19,6 +19,14 @@ declare global {
 }
 import { useMobile } from './hooks/use-mobile';
 import './minesweeper.css';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./components/ui/dialog";
+import { Button } from "./components/ui/button";
 
 // Типы данных
 interface GameState {
@@ -49,9 +57,11 @@ function FixedMinesweeper() {
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [touchTimeout, setTouchTimeout] = useState<number | null>(null);
   const [touchStartPos, setTouchStartPos] = useState<{ x: number, y: number } | null>(null);
+  const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
 
   // Определяем sendGameResult до его использования
   const sendGameResult = useCallback((won: boolean) => {
+    setIsGameOverModalVisible(true); // Показываем модальное окно
     if (window.Telegram?.WebApp) {
       const result = {
         event: 'gameOver',
@@ -741,6 +751,40 @@ function FixedMinesweeper() {
       >
         {cells}
       </div>
+
+      <Dialog open={isGameOverModalVisible} onOpenChange={setIsGameOverModalVisible}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-center">
+              {gameState.gameWon ? '🎉 Поздравляем! Вы победили!' : '💥 Игра окончена!'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="text-center py-4">
+            <p className="mb-2">
+              {gameState.gameWon 
+                ? 'Вы успешно нашли все мины!' 
+                : 'Вы подорвались на мине. Попробуйте еще раз!'}
+            </p>
+            <p className="font-bold">Время: {time}</p>
+          </div>
+          <DialogFooter className="flex justify-center gap-2">
+            <Button
+              onClick={showDifficultySelection}
+              className="w-full"
+              variant="default"
+            >
+              Новая игра
+            </Button>
+            <Button
+              onClick={() => setIsGameOverModalVisible(false)}
+              className="w-full"
+              variant="secondary"
+            >
+              Закрыть
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -40,7 +40,7 @@ export function useMinesweeper() {
 
   const [gameStarted, setGameStarted] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState<number>(0);
 
   // Time tracking
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
@@ -55,7 +55,7 @@ export function useMinesweeper() {
     if (!gameStarted || gameState.gameOver) return;
     
     const currentTime = Date.now() - (startTime || 0);
-    setTime(formatTime(currentTime));
+    setTime(currentTime);
   }, [gameStarted, gameState.gameOver, startTime]);
 
   // Start timer
@@ -80,7 +80,7 @@ export function useMinesweeper() {
   const initializeGame = useCallback((width: number, height: number, mineCount: number) => {
     // Reset game state
     setGameStarted(false);
-    setTime('00:00');
+    setTime(0);
     stopTimer();
     
     // Create empty arrays with correct dimensions (using 1-indexed grid)
@@ -144,7 +144,7 @@ export function useMinesweeper() {
     stopTimer();
     
     // Set game result data for modal
-    const gameTime = time;
+    const gameTime = formatTime(time);
     setGameResult({
       isVictory: win,
       gameTime
@@ -563,7 +563,7 @@ export function useMinesweeper() {
 
   return {
     gameState,
-    time,
+    time: formatTime(time),
     isHelpVisible,
     isGameOverModalVisible,
     gameResult,

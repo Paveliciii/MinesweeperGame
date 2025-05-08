@@ -186,6 +186,81 @@ body {
   background-color: #2563eb;
 }
 
+/* Dialog styles */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-content {
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 90%;
+  width: 24rem;
+  position: relative;
+}
+
+.dialog-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.dialog-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.dialog-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.dialog-button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.dialog-button:hover {
+  opacity: 0.8;
+}
+
+.dialog-button-primary {
+  background-color: var(--tg-theme-button-color, #3390ec);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  border: none;
+}
+
+.dialog-button-secondary {
+  background-color: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  color: var(--tg-theme-text-color, #000000);
+  border: 1px solid var(--tg-theme-hint-color, #999999);
+}
+
+@media (max-width: 640px) {
+  .dialog-content {
+    width: 90%;
+    padding: 1rem;
+  }
+  
+  .dialog-footer {
+    flex-direction: column;
+  }
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
   .container {
