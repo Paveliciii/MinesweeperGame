@@ -54,12 +54,12 @@ const validateTelegramWebAppData = (req: express.Request, res: express.Response,
 // Используем middleware для всех запросов
 app.use(validateTelegramWebAppData);
 
-// Отдаем статические файлы из папки dist
-app.use(express.static(path.join(__dirname, '../client/dist')));
+// Отдаем статические файлы из папки dist/public
+app.use(express.static(path.join(__dirname, '../dist/public')));
 
 // Все остальные запросы переправляем на index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  res.sendFile(path.join(__dirname, '../dist/public/index.html'));
 });
 
 app.use((req, res, next) => {
@@ -123,10 +123,6 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
   });
 })();
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 // Маршрут для сохранения результатов (можно добавить позже)
 app.post('/api/score', express.json(), (req, res) => {
