@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -37,6 +38,14 @@
     --ring: 0 0% 3.9%;
 
     --radius: 0.5rem;
+
+    --tg-theme-bg-color: #ffffff;
+    --tg-theme-text-color: #000000;
+    --tg-theme-hint-color: #999999;
+    --tg-theme-link-color: #2481cc;
+    --tg-theme-button-color: #2481cc;
+    --tg-theme-button-text-color: #ffffff;
+    --tg-theme-secondary-bg-color: #f1f1f1;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -90,6 +99,10 @@
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     @apply font-sans antialiased bg-white text-black;
+    font-family: 'Roboto', sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
   }
 }
 
@@ -119,6 +132,34 @@
   50% {
     transform: scale(0.95);
   }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
 
 /* Minesweeper specific styles */
@@ -162,4 +203,25 @@
     height: 32px;
     font-size: 14px;
   }
+}
+
+/* Стили для кнопок */
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  background-color: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Стили для карточек */
+.card {
+  @apply rounded-2xl backdrop-blur-sm;
+  background-color: var(--tg-theme-secondary-bg-color);
 }

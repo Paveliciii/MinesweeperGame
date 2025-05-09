@@ -19,8 +19,6 @@ export interface CellProps {
   isMine: boolean;
   isFlagged: boolean;
   mineCount: number;
-  onClick: () => void;
-  onRightClick: (e: React.MouseEvent) => void;
   gameOver: boolean;
   onClick: () => void;
   onRightClick: (e: React.MouseEvent) => void;

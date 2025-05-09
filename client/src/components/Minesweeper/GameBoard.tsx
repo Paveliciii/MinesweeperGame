@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import Cell from './Cell';
 import type { GameState } from '../../types/game';
+import Cell from './Cell';
+import { useMemo } from 'react';
 
 interface GameBoardProps {
   gameState: GameState;
@@ -8,11 +8,11 @@ interface GameBoardProps {
   onCellRightClick: (x: number, y: number) => void;
 }
 
-function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps) {
-  // Вычисляем размер ячейки на основе размера экрана и размера поля
+export default function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps) {
   const getCellSize = () => {
-    const maxWidth = Math.min(window.innerWidth - 32, 500); // 32px для отступов
-    return Math.floor(maxWidth / gameState.width);
+    const maxWidth = Math.min(window.innerWidth - 32, 480);
+    const cellSize = Math.floor(maxWidth / gameState.width);
+    return Math.min(cellSize, 40); // Максимальный размер ячейки
   };
 
   const handleCellClick = (x: number, y: number) => {
@@ -28,34 +28,40 @@ function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps)
     }
   };
 
-  const cellSize = getCellSize();
+  const cellSize = useMemo(getCellSize, [gameState.width]);
+  const gridStyle = useMemo(() => ({
+    gridTemplateColumns: `repeat(${gameState.width}, minmax(0, 1fr))`,
+    gap: '4px',
+    maxWidth: `${cellSize * gameState.width + (gameState.width - 1) * 4}px`,
+  }), [gameState.width, cellSize]);
 
   return (
     <div className="flex justify-center items-center p-4">
       <div 
-        className="grid gap-2 p-6 rounded-2xl bg-surface/90 shadow-neumorphic animate-reveal"
-        style={{
-          gridTemplateColumns: `repeat(${gameState.width}, ${cellSize}px)`,
-        }}
+        className="grid w-full bg-black/20 backdrop-blur-sm rounded-2xl p-3"
+        style={gridStyle}
       >
-        {Array.from({ length: gameState.height }, (_, y) => (
-          Array.from({ length: gameState.width }, (_, x) => (
-            <Cell
-              key={`${x}-${y}`}
-              x={x + 1}
-              y={y + 1}
-              isRevealed={gameState.revealed[x + 1][y + 1]}
-              isMine={gameState.mines[x + 1][y + 1]}
-              isFlagged={gameState.flags[x + 1][y + 1]}
-              mineCount={gameState.mineCount}
-              onClick={() => handleCellClick(x + 1, y + 1)}
-              onRightClick={(e) => handleCellRightClick(e, x + 1, y + 1)}
-            />
-          ))
-        )).flat()}
+        {Array.from({ length: gameState.height }, (_, y) =>
+          Array.from({ length: gameState.width }, (_, x) => {
+            const adjustedX = x + 1;
+            const adjustedY = y + 1;
+            return (
+              <Cell
+                key={`${adjustedX}-${adjustedY}`}
+                x={adjustedX}
+                y={adjustedY}
+                isRevealed={gameState.revealed[adjustedX][adjustedY]}
+                isMine={gameState.mines[adjustedX][adjustedY]}
+                isFlagged={gameState.flags[adjustedX][adjustedY]}
+                mineCount={gameState.mineCount}
+                gameOver={gameState.gameOver}
+                onClick={() => handleCellClick(adjustedX, adjustedY)}
+                onRightClick={(e) => handleCellRightClick(e, adjustedX, adjustedY)}
+              />
+            );
+          })
+        ).flat()}
       </div>
     </div>
   );
 }
-
-export default memo(GameBoard);
