@@ -119,24 +119,72 @@ body {
   font-size: calc(min(16px, 4vw));
 }
 
+/* Стили для цифр в ячейках */
 .cell {
-  width: 36px;
-  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 1.1rem;
-  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  background: var(--tg-theme-secondary-bg-color, #e0e0e0);
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
   user-select: none;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #000000;
-  border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
+  cursor: pointer;
+}
+
+.cell.revealed {
+  background: var(--tg-theme-bg-color, #f5f5f5);
+}
+
+/* Цвета для разных чисел */
+.cell[data-value="1"] {
+  color: #2196F3; /* синий */
+}
+
+.cell[data-value="2"] {
+  color: #4CAF50; /* зеленый */
+}
+
+.cell[data-value="3"] {
+  color: #F44336; /* красный */
+}
+
+.cell[data-value="4"] {
+  color: #673AB7; /* фиолетовый */
+}
+
+.cell[data-value="5"] {
+  color: #795548; /* коричневый */
+}
+
+.cell[data-value="6"] {
+  color: #009688; /* бирюзовый */
+}
+
+.cell[data-value="7"] {
+  color: #000000; /* черный */
+}
+
+.cell[data-value="8"] {
+  color: #607D8B; /* серо-синий */
+}
+
+.cell.flagged::before {
+  content: "🚩";
+  font-size: 16px;
+}
+
+.cell.mine {
+  background: #ff4444;
+}
+
+.cell.mine::before {
+  content: "💣";
+  font-size: 16px;
 }
 
 .cell::before {
