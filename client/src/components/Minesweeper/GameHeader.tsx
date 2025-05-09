@@ -19,19 +19,18 @@ export default function GameHeader({
 }: GameHeaderProps) {
   // const isMobile = useMobile(); // Removed as it is not used
 
-  return (
-    <div className="w-full px-1 py-2">
-      <div className="flex justify-between items-center gap-2">
-        <div className="flex gap-1.5">
+  return (    <div className="w-full px-2 py-3">
+      <div className="flex justify-between items-center gap-3">
+        <div className="flex gap-2">
           {/* Счетчик мин */}
-          <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 border border-white/10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-glass backdrop-blur-glass shadow-glass border border-white/10 transition-all duration-200 hover:shadow-glass-hover animate-fade-in">
             <svg className="w-4 h-4 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
-            <span className="font-medium text-xs text-white/90">{minesRemaining}</span>
+            <span className="font-medium text-sm text-tg-text">{minesRemaining}</span>
           </div>
           {/* Таймер */}
-          <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 border border-white/10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-glass backdrop-blur-glass shadow-glass border border-white/10 transition-all duration-200 hover:shadow-glass-hover animate-fade-in">
             <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -41,8 +40,7 @@ export default function GameHeader({
         <div className="flex gap-1.5">
           {/* Флаг */}
           <button
-            onClick={onFlagModeToggle}
-            className={`p-1.5 rounded-xl bg-white/10 border border-white/10 text-white/80 hover:bg-white/20 transition ${isFlagMode ? 'ring-2 ring-blue-400' : ''}`}
+            onClick={onFlagModeToggle}            className={`p-2 rounded-xl bg-gradient-glass backdrop-blur-glass shadow-button border border-white/10 text-white/80 hover:shadow-button-hover hover:bg-white/20 transition-all duration-200 ${isFlagMode ? 'ring-2 ring-tg-button' : ''} animate-scale-in`}
             title={isFlagMode ? "Режим флажков включен" : "Режим флажков выключен"}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,9 +48,8 @@ export default function GameHeader({
             </svg>
           </button>
           {/* Помощь */}
-          <button
-            onClick={onHelpClick}
-            className="p-1.5 rounded-xl bg-white/10 border border-white/10 text-white/80 hover:bg-white/20 transition"
+          <button            onClick={onHelpClick}
+            className="p-1.5 rounded-xl bg-gradient-glass backdrop-blur-glass shadow-button border border-white/10 text-white/80 hover:shadow-button-hover hover:bg-white/20 transition-all duration-200 animate-scale-in"
             title="Помощь"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -62,7 +59,7 @@ export default function GameHeader({
           {/* Новая игра */}
           <button
             onClick={onNewGameClick}
-            className="p-1.5 rounded-xl bg-white/10 border border-white/10 text-white/80 hover:bg-white/20 transition"
+            className="p-1.5 rounded-xl bg-gradient-glass backdrop-blur-glass shadow-button border border-white/10 text-white/80 hover:shadow-button-hover hover:bg-white/20 transition-all duration-200 animate-scale-in"
             title="Новая игра"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -19,34 +19,34 @@ export default function GameOverModal({
   return (
     <Dialog open={isVisible} onOpenChange={onClose}>
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="bg-surface rounded-2xl p-8 shadow-neumorphic max-w-sm w-full mx-4 transform transition-all animate-reveal">
+      <div className="fixed inset-0 flex items-center justify-center">        <div className="bg-gradient-glass backdrop-blur-glass rounded-2xl p-8 shadow-glass border border-white/10 max-w-sm w-full mx-4 transform transition-all animate-scale-in">
           <div className="flex flex-col items-center gap-6">
-            <div className="text-5xl mb-2">
+            <div className="text-6xl mb-2 animate-bounce">
               {isVictory ? "🎉" : "💣"}
             </div>
             
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-primary-dark mb-2">
+              <h2 className="text-2xl font-bold text-tg-text mb-2">
                 {isVictory ? "Победа!" : "Игра окончена"}
               </h2>
-              <p className="text-primary">
+              <p className="text-tg-hint">
                 {isVictory
                   ? `Ваше время: ${formatTime(gameTime)}`
                   : "Попробуйте еще раз!"}
               </p>
             </div>
-            
-            <div className="flex gap-4 w-full">
+              <div className="flex gap-4 w-full">
               <button
                 onClick={onNewGame}
-                className="flex-1 px-6 py-3 bg-surface text-primary-dark rounded-xl font-medium shadow-neumorphic hover:shadow-neumorphic-pressed active:shadow-neumorphic-inset transition-all duration-200"
+                className="flex-1 px-6 py-3 bg-gradient-button text-tg-button-text rounded-xl font-medium shadow-button hover:shadow-button-hover active:opacity-90 transition-all duration-200 animate-slide-up"
+                style={{ animationDelay: '0.1s' }}
               >
                 Новая игра
               </button>
               <button
                 onClick={onClose}
-                className="flex-1 px-6 py-3 bg-surface text-primary-light rounded-xl font-medium shadow-neumorphic hover:shadow-neumorphic-pressed active:shadow-neumorphic-inset transition-all duration-200"
+                className="flex-1 px-6 py-3 bg-gradient-glass backdrop-blur-glass text-tg-text rounded-xl font-medium shadow-button hover:shadow-button-hover active:opacity-90 transition-all duration-200 animate-slide-up"
+                style={{ animationDelay: '0.2s' }}
               >
                 Закрыть
               </button>
