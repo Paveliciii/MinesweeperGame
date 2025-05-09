@@ -1,4 +1,3 @@
-import { useMobile } from "../../hooks/use-mobile";
 import { formatTime } from "../../lib/minesweeperUtils";
 
 interface GameHeaderProps {
@@ -18,7 +17,7 @@ export default function GameHeader({
   onHelpClick,
   onNewGameClick
 }: GameHeaderProps) {
-  const isMobile = useMobile();
+  // const isMobile = useMobile(); // Removed as it is not used
 
   return (
     <div className="w-full px-1 py-2">
