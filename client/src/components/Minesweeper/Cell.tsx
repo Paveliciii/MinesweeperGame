@@ -5,27 +5,14 @@ export default function Cell({
   onClick, onRightClick 
 }: CellProps) {  const getCellContent = () => {    if (isFlagged) {
       return (
-        <span 
-          className="transform transition-all duration-300 animate-bounce-in"
-          style={{ 
-            animationDelay: '50ms',
-            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
-          }}
-        >
+        <span className="transform transition-all duration-300 animate-bounce-in">
           🚩
         </span>
       );
     }
-    if (!isRevealed) return null;
-    if (isMine) {
+    if (!isRevealed) return null;    if (isMine) {
       return (
-        <span 
-          className="transform transition-all duration-300 animate-bounce-in"
-          style={{ 
-            animationDelay: '50ms',
-            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
-          }}
-        >
+        <span className="transform transition-all duration-300 animate-bounce-in">
           💣
         </span>
       );
