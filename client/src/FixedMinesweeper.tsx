@@ -103,49 +103,13 @@ function FixedMinesweeper() {
   });
 
   // Определяем sendGameResult до его использования
-  const sendGameResult = useCallback(async (won: boolean) => {
+  const sendGameResult = useCallback((won: boolean) => {
     setIsGameOverModalVisible(true);
-    
-    const result = {
-      time,
-      difficulty: `${gameState.width}x${gameState.height}`,
-      mineCount: gameState.mineCount,
-      won
-    };
-
-    if (window.Telegram?.WebApp) {
-      try {
-        // Отправляем данные в Telegram
-        window.Telegram.WebApp.sendData?.(JSON.stringify({
-          event: 'gameOver',
-          ...result
-        }));
-
-        // Отправляем на сервер
-        const response = await fetch('/api/score', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Telegram-Init-Data': window.Telegram.WebApp.initData || ''
-          },
-          body: JSON.stringify(result)
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          console.error('Error sending score:', error);
-          window.Telegram.WebApp.showAlert?.(
-            'Не удалось сохранить результат. Пожалуйста, попробуйте позже.'
-          );
-        }
-      } catch (error) {
-        console.error('Error sending data:', error);
-        window.Telegram.WebApp.showAlert?.(
-          'Произошла ошибка при отправке результата.'
-        );
-      }
-    }
-  }, [gameState.width, gameState.height, gameState.mineCount, time]);
+    setGameState(prev => ({
+      ...prev,
+      gameWon: won
+    }));
+  }, []);
 
   // Время
 
