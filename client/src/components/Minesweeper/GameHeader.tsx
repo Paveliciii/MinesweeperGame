@@ -20,60 +20,66 @@ export default function GameHeader({
 }: GameHeaderProps) {
   const isMobile = useMobile();
   return (
-    <div className="flex flex-col w-full p-3 rounded-lg shadow-md gap-2" style={{ backgroundColor: 'var(--tg-theme-secondary-bg-color, #454545)' }}>
-      <h1 className="text-center font-bold text-2xl mb-2 text-white">Сапёр</h1>
-      <div className="flex items-center justify-between w-full text-white">
-        <div id="mines-counter" className="font-bold text-xl">
-          🚩 {minesRemaining}
+    <div className="flex flex-col w-full p-4 rounded-2xl shadow-lg gap-4 backdrop-blur-sm bg-opacity-20" 
+         style={{ backgroundColor: 'var(--tg-theme-secondary-bg-color, #454545)' }}>
+      <h1 className="text-center font-bold text-2xl text-white tracking-wide">Сапёр</h1>
+      
+      <div className="flex justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <div className="bg-opacity-20 backdrop-blur-sm bg-white p-3 rounded-xl flex items-center gap-2">
+            <span className="text-2xl">🚩</span>
+            <span className="font-bold text-xl text-white">{minesRemaining}</span>
+          </div>
+          <div className="bg-opacity-20 backdrop-blur-sm bg-white p-3 rounded-xl flex items-center gap-2">
+            <span className="text-2xl">⏱️</span>
+            <span className="font-bold text-xl text-white">{formatTime(time)}</span>
+          </div>
         </div>
-        <div id="timer" className="font-bold text-xl">
-          ⏱️ {formatTime(time)}
+
+        <div className="flex gap-2">
+          <button
+            onClick={onFlagModeToggle}
+            className={`p-3 rounded-xl transition-all duration-200 flex items-center justify-center ${
+              isFlagMode 
+                ? "bg-white bg-opacity-90 text-black" 
+                : "bg-white bg-opacity-20 text-white"
+            }`}
+            title={isFlagMode ? "Режим флажков включен" : "Режим флажков выключен"}
+          >
+            <span className="text-xl">🚩</span>
+          </button>
+          
+          <button
+            onClick={onHelpClick}
+            className="p-3 rounded-xl bg-white bg-opacity-20 text-white transition-all duration-200 hover:bg-opacity-30"
+            title="Помощь"
+          >
+            <span className="text-xl">❓</span>
+          </button>
+          
+          <button
+            onClick={onNewGameClick}
+            className="p-3 rounded-xl bg-white bg-opacity-20 text-white transition-all duration-200 hover:bg-opacity-30"
+            title="Новая игра"
+          >
+            <span className="text-xl">🔄</span>
+          </button>
         </div>
       </div>
-      
+
       {isMobile && (
-        <div className="text-xs text-center w-full">
+        <div className="text-sm text-center mt-2">
           {isFlagMode ? (
-            <span className="bg-foreground text-background px-2 py-1 rounded-md">
-              🚩 Flag Mode: ON - Tap cells to place flags
+            <span className="bg-white bg-opacity-20 px-4 py-2 rounded-full inline-block text-white">
+              🚩 Режим флажков - нажмите на клетку, чтобы поставить флажок
             </span>
           ) : (
-            <span>
-              Tap cells to open | Long-press to place/remove flags
+            <span className="text-white text-opacity-80">
+              Нажмите, чтобы открыть | Удерживайте для установки флажка
             </span>
           )}
         </div>
       )}
-      <div className="flex gap-2 justify-end w-full">
-        <button
-          id="flag-mode"
-          className={`w-10 h-10 flex items-center justify-center ${
-            isFlagMode 
-            ? "bg-foreground text-background" 
-            : "bg-primary text-primary-foreground"
-          } rounded-lg hover:opacity-80 transition`}
-          onClick={onFlagModeToggle}
-          aria-label="Toggle flag mode"
-        >
-          🚩
-        </button>
-        <button
-          id="help"
-          className="w-10 h-10 flex items-center justify-center bg-primary text-primary-foreground rounded-lg hover:opacity-80 transition"
-          onClick={onHelpClick}
-          aria-label="Help"
-        >
-          ❓
-        </button>
-        <button
-          id="new-game"
-          className="w-10 h-10 flex items-center justify-center bg-primary text-primary-foreground rounded-lg hover:opacity-80 transition"
-          onClick={onNewGameClick}
-          aria-label="New Game"
-        >
-          🔄
-        </button>
-      </div>
     </div>
   );
 }

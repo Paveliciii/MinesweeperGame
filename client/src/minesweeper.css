@@ -86,12 +86,12 @@ body {
 
 .game-board {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
-  gap: 4px;
-  padding: 8px;
-  background-color: #d1d5db;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), inset 0 0 0 2px rgba(0, 0, 0, 0.05);
+  gap: 6px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   max-width: 100%;
   margin: 0 auto;
   /* Добавляем адаптивное масштабирование */
@@ -120,49 +120,74 @@ body {
 }
 
 .cell {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
   user-select: none;
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: #ffffff;
   color: #000000;
-  border: 2px solid #cccccc;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 7px;
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
 }
 
 .cell.revealed {
-  background-color: #f0f0f0;
-  border-color: #cccccc;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.cell.flagged {
-  background-color: #ffffff;
+.cell.revealed::before {
+  opacity: 0;
 }
 
 .cell.mine {
   background-color: #ff4444;
   color: white;
+  animation: shake 0.4s ease-in-out;
 }
 
 .cell:not(.revealed):not(.mine):hover {
-  background-color: #e0e0e0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Стили для чисел */
-.cell[data-mines="1"] { color: #0066ff; }
-.cell[data-mines="2"] { color: #00aa00; }
-.cell[data-mines="3"] { color: #ff0000; }
-.cell[data-mines="4"] { color: #000099; }
-.cell[data-mines="5"] { color: #aa0000; }
-.cell[data-mines="6"] { color: #00aaaa; }
-.cell[data-mines="7"] { color: #aa00aa; }
-.cell[data-mines="8"] { color: #666666; }
+.cell.flagged::before {
+  background: linear-gradient(45deg, rgba(255,200,100,0.3), rgba(255,255,255,0.4));
+}
+
+/* Стили для чисел с улучшенной контрастностью и градиентами */
+.cell[data-mines="1"] { color: #2563eb; text-shadow: 0 1px 2px rgba(37, 99, 235, 0.2); }
+.cell[data-mines="2"] { color: #059669; text-shadow: 0 1px 2px rgba(5, 150, 105, 0.2); }
+.cell[data-mines="3"] { color: #dc2626; text-shadow: 0 1px 2px rgba(220, 38, 38, 0.2); }
+.cell[data-mines="4"] { color: #4f46e5; text-shadow: 0 1px 2px rgba(79, 70, 229, 0.2); }
+.cell[data-mines="5"] { color: #b91c1c; text-shadow: 0 1px 2px rgba(185, 28, 28, 0.2); }
+.cell[data-mines="6"] { color: #0d9488; text-shadow: 0 1px 2px rgba(13, 148, 136, 0.2); }
+.cell[data-mines="7"] { color: #6d28d9; text-shadow: 0 1px 2px rgba(109, 40, 217, 0.2); }
+.cell[data-mines="8"] { color: #475569; text-shadow: 0 1px 2px rgba(71, 85, 105, 0.2); }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
 
 /* Modal styles */
 .modal {
