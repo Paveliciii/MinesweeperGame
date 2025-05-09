@@ -60,15 +60,23 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
     }
     
     // Remove hash from the data before checking
-    urlParams.delete('hash');
+    urlParams.delete('hash');    // Создаем массив пар ключ-значение и сортируем их
+    const pairs = Array.from(urlParams.entries());
+    
+    // Сортируем массив по ASCII-значениям символов
+    pairs.sort((a, b) => {
+      const aKey = a[0].toString();
+      const bKey = b[0].toString();
+      return aKey.localeCompare(bKey, 'en');
+    });
 
-    // Sort in correct order and join with \n
-    const dataCheckString = Array.from(urlParams.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
+    // Формируем строку для проверки
+    const dataCheckString = pairs
       .map(([key, value]) => `${key}=${value}`)
       .join('\n');
 
     console.log('Data Check String:', dataCheckString);
+    console.log('Pairs:', JSON.stringify(pairs, null, 2));
 
     // Create secret key from bot token
     const secretKey = createHash('sha256')
@@ -87,6 +95,17 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
     console.log('HMAC vs Hash:');
     console.log('HMAC:', hmac);
     console.log('Hash:', hash);
+    console.log('Raw Init Data:', initDataStr);
+    console.log('Sorted Params:', Array.from(urlParams.entries())
+      .map(([k,v]) => `${k}: ${v}`).join('\n'));
+    
+    // Проверяем, есть ли обязательные поля
+    const requiredFields = ['auth_date', 'user'];
+    const missingFields = requiredFields.filter(field => !urlParams.has(field));
+    if (missingFields.length > 0) {
+      console.error('Missing required fields:', missingFields);
+      return res.status(400).json({ error: 'Missing required fields', fields: missingFields });
+    }
     
     if (hmac.toLowerCase() === hash.toLowerCase()) {
       console.log('Telegram data validation successful');
