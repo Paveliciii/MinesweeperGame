@@ -8,36 +8,38 @@ interface HelpModalProps {
 export default function HelpModal({ isVisible, onClose }: HelpModalProps) {
   const isMobile = useMobile();
   if (!isVisible) return null;
-  
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-5 rounded-xl max-w-[90%] w-96">
-        <h2 className="text-xl font-bold mb-3">How to Play</h2>
-        
-        {isMobile ? (
-          <ul className="list-disc pl-5 mb-4 space-y-2">
-            <li>Tap a cell to reveal it</li>
-            <li>Long-press or use the 🚩 button to place/remove flags</li>
-            <li>Use Flag Mode to easily place multiple flags</li>
-            <li>Numbers show how many mines are adjacent</li>
-            <li>Flag all mines to win!</li>
-            <li>Tap on a numbered cell to reveal adjacent cells if the correct number of flags is placed</li>
-          </ul>
-        ) : (
-          <ul className="list-disc pl-5 mb-4 space-y-2">
-            <li>Click a cell to reveal it</li>
-            <li>Right-click or use the 🚩 button to place flags</li>
-            <li>Numbers show how many mines are adjacent</li>
-            <li>Flag all mines to win!</li>
-            <li>If you click on a numbered cell with the correct number of flags around it, all non-flagged adjacent cells will be revealed</li>
-          </ul>
-        )}
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative bg-[#23272f] border border-white/10 rounded-xl p-4 max-w-xs w-full text-white text-sm shadow-xl">
+        <div className="flex items-center gap-2 mb-2">
+          <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
+          <span>Как играть</span>
+        </div>
+        <ul className="list-disc pl-5 space-y-1">
+          {isMobile ? (
+            <>
+              <li>Тапните по ячейке, чтобы открыть</li>
+              <li>Долгое нажатие или 🚩 — поставить флаг</li>
+              <li>Флагами отмечайте мины</li>
+              <li>Откройте все безопасные клетки для победы</li>
+            </>
+          ) : (
+            <>
+              <li>Кликните по ячейке, чтобы открыть</li>
+              <li>Правый клик или 🚩 — поставить флаг</li>
+              <li>Флагами отмечайте мины</li>
+              <li>Откройте все безопасные клетки для победы</li>
+            </>
+          )}
+        </ul>
         <button 
-          id="close-help" 
-          className="w-full py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-80 transition"
+          className="mt-4 w-full py-1.5 rounded-md bg-white/10 border border-white/10 text-white hover:bg-white/20 transition"
           onClick={onClose}
         >
-          Close
+          Ок
         </button>
       </div>
     </div>

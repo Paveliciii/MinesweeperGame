@@ -14,13 +14,13 @@ export default function Cell({
   const getNumberColor = () => {
     const colors = {
       1: 'text-blue-500',
-      2: 'text-emerald-500',
-      3: 'text-rose-500',
-      4: 'text-blue-700',
-      5: 'text-rose-700',
+      2: 'text-green-600',
+      3: 'text-red-500',
+      4: 'text-blue-900',
+      5: 'text-red-900',
       6: 'text-teal-600',
-      7: 'text-slate-700',
-      8: 'text-slate-500'
+      7: 'text-black',
+      8: 'text-gray-600',
     };
     return colors[mineCount as keyof typeof colors] || '';
   };
@@ -37,14 +37,12 @@ export default function Cell({
         flex items-center justify-center
         text-base font-medium
         rounded-md border border-white/10
-        transition-all duration-200
-        select-none
-        ${isRevealed
-          ? 'bg-white/5 shadow-inner'
-          : 'bg-white/10 hover:bg-white/15 active:bg-white/5'
-        }
+        bg-white/5 shadow-inner
+        transition-all duration-150 select-none
+        ${isRevealed ? 'bg-white/10' : 'hover:bg-white/15 active:bg-white/5'}
         ${isRevealed && !isMine && !isFlagged ? getNumberColor() : 'text-white'}
         ${!isRevealed && 'hover:-translate-y-0.5 active:translate-y-0'}
+        focus:outline-none
       `}
     >
       {getCellContent()}
