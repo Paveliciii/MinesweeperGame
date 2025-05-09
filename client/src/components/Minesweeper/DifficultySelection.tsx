@@ -1,5 +1,5 @@
 interface DifficultySelectionProps {
-  onDifficultySelect: (width: number, height: number, mines: number) => void;
+  onDifficultySelect: (difficulty: 'easy' | 'medium' | 'hard') => void;
 }
 
 export default function DifficultySelection({ onDifficultySelect }: DifficultySelectionProps) {
@@ -8,9 +8,10 @@ export default function DifficultySelection({ onDifficultySelect }: DifficultySe
       <h2 className="text-2xl font-bold text-center text-white mb-2">
         Выберите уровень сложности
       </h2>
-        <div className="grid gap-3">
+      
+      <div className="grid gap-3">
         <button
-          onClick={() => onDifficultySelect(8, 8, 10)}
+          onClick={() => onDifficultySelect('easy')}
           className="flex items-center justify-between p-4 bg-white bg-opacity-20 rounded-xl text-white hover:bg-opacity-30 transition-all duration-200"
         >
           <span className="font-medium">Легкий</span>
@@ -19,25 +20,29 @@ export default function DifficultySelection({ onDifficultySelect }: DifficultySe
             <span>•</span>
             <span>10 мин</span>
           </div>
-        </button>        <button
-          onClick={() => onDifficultySelect(16, 16, 40)}
+        </button>
+
+        <button
+          onClick={() => onDifficultySelect('medium')}
           className="flex items-center justify-between p-4 bg-white bg-opacity-20 rounded-xl text-white hover:bg-opacity-30 transition-all duration-200"
         >
           <span className="font-medium">Средний</span>
           <div className="flex items-center gap-2 text-sm opacity-80">
-            <span>16×16</span>
+            <span>10×10</span>
             <span>•</span>
-            <span>40 мин</span>
+            <span>15 мин</span>
           </div>
-        </button>        <button
-          onClick={() => onDifficultySelect(30, 16, 99)}
+        </button>
+
+        <button
+          onClick={() => onDifficultySelect('hard')}
           className="flex items-center justify-between p-4 bg-white bg-opacity-20 rounded-xl text-white hover:bg-opacity-30 transition-all duration-200"
         >
           <span className="font-medium">Сложный</span>
           <div className="flex items-center gap-2 text-sm opacity-80">
-            <span>30×16</span>
+            <span>12×12</span>
             <span>•</span>
-            <span>99 мин</span>
+            <span>25 мин</span>
           </div>
         </button>
       </div>
