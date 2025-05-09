@@ -48,10 +48,10 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
   }
 
   try {
-    // Convert initData to string if it's a Buffer or array
-    const initDataStr = Buffer.isBuffer(initData) ? initData.toString() : initData.toString();
+    // Используем именно исходную строку initData
+    const initDataStr = initData.toString();
     
-    // Parse the init data
+    // Получаем хэш
     const urlParams = new URLSearchParams(initDataStr);
     const hash = urlParams.get('hash');
     
@@ -60,70 +60,45 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
       return res.status(401).json({ error: 'No hash provided' });
     }
 
-    // Remove parameters that should not be included in the validation
-    urlParams.delete('hash');
-    urlParams.delete('signature');
+    // Разбираем строку initData
+    const searchParams = new URLSearchParams(initDataStr);
+    searchParams.delete('hash');
 
-    // Create array of key-value pairs and sort by key
-    const pairs = Array.from(urlParams.entries())
-      .sort(([a], [b]) => a.localeCompare(b));
+    // Создаем отсортированный массив пар [ключ, значение]
+    const pairs = Array.from(searchParams.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]));
 
-    // Create the data check string
+    // Формируем строку для проверки точно так же, как это делает Telegram
     const dataCheckString = pairs
       .map(([key, value]) => `${key}=${value}`)
       .join('\n');
 
-    console.log('Filtered and sorted pairs:', JSON.stringify(pairs.map(([k,v]) => ({[k]: v})), null, 2));
-    console.log('Data Check String:', dataCheckString);
-    console.log('Data Check String (hex):', Buffer.from(dataCheckString).toString('hex'));
-
-    // Create secret key from bot token
+    // Создаем секретный ключ из токена бота
     const secretKey = createHash('sha256')
       .update(process.env.BOT_TOKEN)
       .digest();
 
-    // Calculate HMAC
+    // Вычисляем HMAC
     const hmac = createHmac('sha256', secretKey)
       .update(dataCheckString)
       .digest('hex');
 
-    // Debug logging
-    console.log('Bot Token length:', process.env.BOT_TOKEN?.length);
-    console.log('Secret Key length:', secretKey.length);
-    console.log('HMAC vs Hash:');
-    console.log('HMAC:', hmac);
-    console.log('Hash:', hash);
-
-    // Check required fields
-    const requiredFields = ['auth_date', 'user'];
-    const missingFields = requiredFields.filter(field => !urlParams.has(field));
-    if (missingFields.length > 0) {
-      console.error('Missing required fields:', missingFields);
-      return res.status(400).json({ error: 'Missing required fields', fields: missingFields });
-    }
-
+    // Проверяем равенство хэшей
     if (hmac.toLowerCase() === hash.toLowerCase()) {
-      const userDataStr = urlParams.get('user') || '{}';
+      const userDataStr = searchParams.get('user') || '{}';
       const userData = JSON.parse(userDataStr);
       req.telegramData = { user: userData };
-      console.log('Telegram data validation successful');
       next();
     } else {
       console.error('Hash validation failed');
-      console.error('Data length:', dataCheckString.length);
-      console.error('Data bytes:', Buffer.from(dataCheckString).length);
-      res.status(401).json({ 
-        error: 'Unauthorized',
-        details: 'HMAC validation failed'
-      });
+      console.error('Expected hash:', hash);
+      console.error('Calculated hash:', hmac);
+      console.error('Data check string:', dataCheckString);
+      res.status(401).json({ error: 'Unauthorized' });
     }
   } catch (e) {
     console.error('Validation error:', e);
-    console.error('Error details:', e instanceof Error ? e.message : String(e));
-    res.status(401).json({ 
-      error: 'Invalid data',
-      details: e instanceof Error ? e.message : 'Unknown error'
-    });
+    res.status(401).json({ error: 'Invalid data' });
   }
 };
 
@@ -184,14 +159,6 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
   });
 })();
-
-// Маршрут для сохранения результатов (можно добавить позже)
-app.post('/api/score', express.json(), (req, res) => {
-  const { score, time, won } = req.body;
-  // Здесь можно добавить сохранение результатов
-  console.log('Received score:', { score, time, won });
-  res.json({ success: true });
-});
 
 // Error handling middleware
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
