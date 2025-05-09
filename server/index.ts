@@ -47,7 +47,8 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
-  try {    // Convert initData to string if it's a Buffer or array
+  try {
+    // Convert initData to string if it's a Buffer or array
     const initDataStr = Buffer.isBuffer(initData) ? initData.toString() : initData.toString();
     
     // Parse the init data
@@ -58,25 +59,23 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
       console.error('No hash provided in init data');
       return res.status(401).json({ error: 'No hash provided' });
     }
-    
-    // Remove hash from the data before checking
-    urlParams.delete('hash');    // Создаем массив пар ключ-значение и сортируем их
-    const pairs = Array.from(urlParams.entries());
-    
-    // Сортируем массив по ASCII-значениям символов
-    pairs.sort((a, b) => {
-      const aKey = a[0].toString();
-      const bKey = b[0].toString();
-      return aKey.localeCompare(bKey, 'en');
-    });
 
-    // Формируем строку для проверки
+    // Remove parameters that should not be included in the validation
+    urlParams.delete('hash');
+    urlParams.delete('signature');
+
+    // Create array of key-value pairs and sort by key
+    const pairs = Array.from(urlParams.entries())
+      .sort(([a], [b]) => a.localeCompare(b));
+
+    // Create the data check string
     const dataCheckString = pairs
       .map(([key, value]) => `${key}=${value}`)
       .join('\n');
 
+    console.log('Filtered and sorted pairs:', JSON.stringify(pairs.map(([k,v]) => ({[k]: v})), null, 2));
     console.log('Data Check String:', dataCheckString);
-    console.log('Pairs:', JSON.stringify(pairs, null, 2));
+    console.log('Data Check String (hex):', Buffer.from(dataCheckString).toString('hex'));
 
     // Create secret key from bot token
     const secretKey = createHash('sha256')
@@ -88,31 +87,26 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
       .update(dataCheckString)
       .digest('hex');
 
-    console.log('Generated HMAC:', hmac);
-    console.log('Received Hash:', hash);    // Дополнительное логирование для отладки
+    // Debug logging
     console.log('Bot Token length:', process.env.BOT_TOKEN?.length);
     console.log('Secret Key length:', secretKey.length);
     console.log('HMAC vs Hash:');
     console.log('HMAC:', hmac);
     console.log('Hash:', hash);
-    console.log('Raw Init Data:', initDataStr);
-    console.log('Sorted Params:', Array.from(urlParams.entries())
-      .map(([k,v]) => `${k}: ${v}`).join('\n'));
-    
-    // Проверяем, есть ли обязательные поля
+
+    // Check required fields
     const requiredFields = ['auth_date', 'user'];
     const missingFields = requiredFields.filter(field => !urlParams.has(field));
     if (missingFields.length > 0) {
       console.error('Missing required fields:', missingFields);
       return res.status(400).json({ error: 'Missing required fields', fields: missingFields });
     }
-    
+
     if (hmac.toLowerCase() === hash.toLowerCase()) {
-      console.log('Telegram data validation successful');
-      // Парсим данные пользователя из initData
       const userDataStr = urlParams.get('user') || '{}';
       const userData = JSON.parse(userDataStr);
       req.telegramData = { user: userData };
+      console.log('Telegram data validation successful');
       next();
     } else {
       console.error('Hash validation failed');
@@ -120,7 +114,7 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
       console.error('Data bytes:', Buffer.from(dataCheckString).length);
       res.status(401).json({ 
         error: 'Unauthorized',
-        details: 'HMAC validation failed. Please ensure you are accessing through Telegram WebApp.'
+        details: 'HMAC validation failed'
       });
     }
   } catch (e) {
