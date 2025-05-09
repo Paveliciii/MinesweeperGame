@@ -31,14 +31,15 @@ export default function GameBoard({ gameState, onCellClick, onCellRightClick }: 
   const cellSize = useMemo(getCellSize, [gameState.width]);
   const gridStyle = useMemo(() => ({
     gridTemplateColumns: `repeat(${gameState.width}, minmax(0, 1fr))`,
-    gap: '4px',
-    maxWidth: `${cellSize * gameState.width + (gameState.width - 1) * 4}px`,
+    gap: '2px',
+    width: '100%',
+    maxWidth: `${gameState.width * 38}px`, // 38px - оптимальный размер для ячейки
   }), [gameState.width, cellSize]);
 
   return (
-    <div className="flex justify-center items-center p-4">
+    <div className="flex justify-center items-center px-2 py-4">
       <div 
-        className="grid w-full bg-black/20 backdrop-blur-sm rounded-2xl p-3"
+        className="grid bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm rounded-xl p-2.5"
         style={gridStyle}
       >
         {Array.from({ length: gameState.height }, (_, y) =>

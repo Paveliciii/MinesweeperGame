@@ -1,9 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
 
 @layer base {
   :root {
@@ -94,11 +98,11 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
-    @apply font-sans antialiased bg-white text-black;
+    background: linear-gradient(to bottom, #0f172a, #1e293b);
+    color: #fff;
+    line-height: 1.5;
     font-family: 'Roboto', sans-serif;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--tg-theme-bg-color);
@@ -224,4 +228,36 @@
 .card {
   @apply rounded-2xl backdrop-blur-sm;
   background-color: var(--tg-theme-secondary-bg-color);
+}
+
+/* Стеклянный эффект */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Плавные переходы и анимации */
+.transition-transform {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-colors {
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Тултипы */
+.tooltip {
+  @apply invisible absolute;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply visible z-50;
+}
+
+/* Тени */
+.shadow-inner-light {
+  box-shadow: inset 0 2px 4px 0 rgba(255, 255, 255, 0.05);
 }

@@ -33,18 +33,18 @@ export default function Cell({
       onContextMenu={onRightClick}
       disabled={gameOver}
       className={`
-        w-9 h-9 sm:w-10 sm:h-10 
+        aspect-square w-full
         flex items-center justify-center
-        text-lg font-medium
-        rounded-lg 
+        text-base font-medium
+        rounded-md border border-white/10
         transition-all duration-200
         select-none
         ${isRevealed
-          ? 'bg-white/10 backdrop-blur-sm'
-          : 'bg-white/20 hover:bg-white/25 active:bg-white/15'
+          ? 'bg-white/5 shadow-inner'
+          : 'bg-white/10 hover:bg-white/15 active:bg-white/5'
         }
         ${isRevealed && !isMine && !isFlagged ? getNumberColor() : 'text-white'}
-        ${isRevealed ? 'scale-100' : 'hover:scale-105 active:scale-95'}
+        ${!isRevealed && 'hover:-translate-y-0.5 active:translate-y-0'}
       `}
     >
       {getCellContent()}
