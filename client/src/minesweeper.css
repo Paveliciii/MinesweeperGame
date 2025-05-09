@@ -164,7 +164,6 @@ body {
     color-mix(in srgb, var(--tg-theme-destructive-text-color) 70%, var(--tg-theme-bg-color))
   );
   color: var(--tg-theme-button-text-color);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .cell.flag {
@@ -173,7 +172,6 @@ body {
     color-mix(in srgb, var(--tg-theme-button-color) 70%, var(--tg-theme-bg-color))
   );
   color: var(--tg-theme-button-text-color);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Стили для цифр в ячейках */
@@ -187,18 +185,22 @@ body {
 .cell[data-number="8"] { color: #95a5a6; }
 
 /* Обновленные цвета для чисел с учетом темной темы */
-.cell[data-mines="1"] { color: #60a5fa; text-shadow: 0 1px 2px rgba(96, 165, 250, 0.2); }
-.cell[data-mines="2"] { color: #34d399; text-shadow: 0 1px 2px rgba(52, 211, 153, 0.2); }
-.cell[data-mines="3"] { color: #f87171; text-shadow: 0 1px 2px rgba(248, 113, 113, 0.2); }
-.cell[data-mines="4"] { color: #818cf8; text-shadow: 0 1px 2px rgba(129, 140, 248, 0.2); }
-.cell[data-mines="5"] { color: #fbbf24; text-shadow: 0 1px 2px rgba(251, 191, 36, 0.2); }
-.cell[data-mines="6"] { color: #06b6d4; text-shadow: 0 1px 2px rgba(6, 182, 212, 0.2); }
-.cell[data-mines="7"] { color: #d946ef; text-shadow: 0 1px 2px rgba(217, 70, 239, 0.2); }
-.cell[data-mines="8"] { color: #94a3b8; text-shadow: 0 1px 2px rgba(148, 163, 184, 0.2); }
+.cell[data-mines="1"] { color: #60a5fa; }
+.cell[data-mines="2"] { color: #34d399; }
+.cell[data-mines="3"] { color: #f87171; }
+.cell[data-mines="4"] { color: #818cf8; }
+.cell[data-mines="5"] { color: #fbbf24; }
+.cell[data-mines="6"] { color: #06b6d4; }
+.cell[data-mines="7"] { color: #d946ef; }
+.cell[data-mines="8"] { color: #94a3b8; }
 
-.cell span {
-  text-shadow: none;
-  filter: none;
+.cell span,
+.cell *,
+.cell::before,
+.cell::after {
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
 }
 
 .game-board {
