@@ -10,7 +10,7 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "cd client && npm install && npm run build",
     "build:server": "cd server && npm install && npm run build",
-    "start": "cd server && npm start"
+    "start": "npm run build && cd server && npm start"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.13",

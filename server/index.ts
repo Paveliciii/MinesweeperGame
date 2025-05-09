@@ -57,6 +57,8 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
       .map(([key, value]) => `${key}=${value}`)
       .join('\n');
 
+    console.log('Data Check String:', dataCheckString);
+
     const secret = createHash('sha256')
       .update(process.env.BOT_TOKEN)
       .digest();
@@ -64,6 +66,9 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
     const hmac = createHmac('sha256', secret)
       .update(dataCheckString)
       .digest('hex');
+
+    console.log('Generated HMAC:', hmac);
+    console.log('Received Hash:', hash);
 
     if (hmac === hash) {
       console.log('Telegram data validation successful');

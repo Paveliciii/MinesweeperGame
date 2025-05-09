@@ -29,16 +29,24 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const publicPath = path.resolve(__dirname, "..", "dist", "public");
+  // В production среде (Render) путь будет /opt/render/project/src/server/dist/public
+  // В локальной среде путь будет relative to __dirname
+  const isProduction = process.env.NODE_ENV === 'production';
+  const publicPath = isProduction
+    ? path.join(process.cwd(), 'server', 'dist', 'public')
+    : path.resolve(__dirname, '..', 'server', 'dist', 'public');
+
+  log(`Serving static files from: ${publicPath}`);
   
   // Serve static files
   app.use(express.static(publicPath));
   
   // Fallback to index.html
   app.get("*", (req, res) => {
-    if (!fs.existsSync(path.join(publicPath, "index.html"))) {
+    const indexPath = path.join(publicPath, "index.html");
+    if (!fs.existsSync(indexPath)) {
       log(`index.html not found in ${publicPath}`);
-      return res.status(404).send('index.html not found');
+      return res.status(404).send(`index.html not found. Looking in: ${indexPath}`);
     }
     res.sendFile(path.join(publicPath, "index.html"));
   });
