@@ -19,13 +19,12 @@ export default function GameHeader({
   onNewGameClick
 }: GameHeaderProps) {
   const isMobile = useMobile();
-  return (    <div className="flex flex-col w-full bg-secondary p-3 rounded-lg shadow-md gap-2">
-      <h1 className="text-center font-bold text-2xl mb-2">Сапёр</h1>
-      <div className="flex items-center justify-between w-full">
-        <div id="mines-counter" className="font-bold text-xl text-red-600 dark:text-red-400">
+  return (    <div className="flex flex-col w-full p-3 rounded-lg shadow-md gap-2" style={{ backgroundColor: 'var(--tg-theme-secondary-bg-color, #454545)' }}>
+      <h1 className="text-center font-bold text-2xl mb-2" style={{ color: 'var(--tg-theme-text-color, #ffffff)' }}>Сапёр</h1><div className="flex items-center justify-between w-full">
+        <div id="mines-counter" className="font-bold text-xl" style={{ color: 'var(--tg-theme-text-color, #ffffff)' }}>
           🚩 {minesRemaining}
         </div>
-        <div id="timer" className="font-bold text-xl text-blue-600 dark:text-blue-400">
+        <div id="timer" className="font-bold text-xl" style={{ color: 'var(--tg-theme-text-color, #ffffff)' }}>
           ⏱️ {formatTime(time)}
         </div>
       </div>
