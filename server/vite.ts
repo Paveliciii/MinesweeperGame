@@ -29,13 +29,17 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const publicPath = path.resolve(process.cwd(), "dist/public");
+  const publicPath = path.resolve(__dirname, "..", "dist", "public");
   
   // Serve static files
   app.use(express.static(publicPath));
   
   // Fallback to index.html
   app.get("*", (req, res) => {
+    if (!fs.existsSync(path.join(publicPath, "index.html"))) {
+      log(`index.html not found in ${publicPath}`);
+      return res.status(404).send('index.html not found');
+    }
     res.sendFile(path.join(publicPath, "index.html"));
   });
 }
