@@ -1,5 +1,4 @@
-import { memo, useState, useEffect } from "react";
-import { useMobile } from "../../hooks/use-mobile";
+import { memo } from "react";
 import type { CellProps } from "../../types/game";
 
 // Ensure the Telegram Web App API is defined
@@ -26,103 +25,44 @@ if (window.Telegram?.WebApp) {
   window.Telegram.WebApp.expand();
 }
 
-function Cell({
-  x,
-  y,
-  isRevealed,
-  isMine,
-  isFlagged,
-  mineCount,
-  gameOver,
-  onClick,
-  onRightClick,
-}: CellProps) {
-  const isMobile = useMobile();
-  const [longPressTimeout, setLongPressTimeout] = useState<number | null>(null);
-  const [isLongPress, setIsLongPress] = useState(false);
-
-  let content = "";
-  let cellClass = "cell";
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
-    if (gameOver) return;
-
-    const timeout = window.setTimeout(() => {
-      setIsLongPress(true);
-      if ((isFlagged || !isRevealed) && onRightClick) {
-        onRightClick({} as React.MouseEvent);
-      }
-    }, 500);
-
-    setLongPressTimeout(timeout);
+export default function Cell({ x, y, isRevealed, isMine, isFlagged, mineCount }: CellProps) {
+  const getCellContent = () => {
+    if (isFlagged) return '🚩';
+    if (!isRevealed) return '';
+    if (isMine) return '💣';
+    return mineCount > 0 ? mineCount : '';
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
-    if (longPressTimeout) {
-      clearTimeout(longPressTimeout);
-      setLongPressTimeout(null);
-    }
-
-    if (!isLongPress && !gameOver) {
-      onClick();
-    }
-
-    setIsLongPress(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (longPressTimeout) {
-        clearTimeout(longPressTimeout);
-      }
+  const getNumberColor = () => {
+    const colors = {
+      1: 'text-blue-600',
+      2: 'text-green-600',
+      3: 'text-red-500',
+      4: 'text-indigo-700',
+      5: 'text-red-700',
+      6: 'text-teal-600',
+      7: 'text-gray-800',
+      8: 'text-gray-600',
     };
-  }, [longPressTimeout]);
-
-  const handleRightClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!isRevealed || isFlagged) {
-      onRightClick(e);
-    }
+    return colors[mineCount as keyof typeof colors] || '';
   };
-
-  if (isFlagged) {
-    content = "🚩";
-    cellClass += " flagged";
-  } else if (isRevealed) {
-    cellClass += " revealed";
-    if (isMine) {
-      content = "💣";
-      cellClass += " mine";
-    } else if (mineCount > 0) {
-      content = mineCount.toString();
-      cellClass += ` cell-${mineCount}`;
-    }
-  }
-
-  if (gameOver && isMine && !isFlagged) {
-    content = "💣";
-    cellClass = "cell mine revealed";
-  }
-
-  const mobileProps = isMobile ? {
-    onTouchStart: handleTouchStart,
-    onTouchEnd: handleTouchEnd,
-  } : {};
 
   return (
-    <div
-      className={cellClass}
+    <button
       data-x={x}
       data-y={y}
-      onClick={isMobile ? undefined : onClick}
-      onContextMenu={handleRightClick}
-      {...mobileProps}
+      className={`
+        w-10 h-10 flex items-center justify-center rounded-lg text-lg font-medium 
+        transition-all duration-200 select-none
+        ${isRevealed 
+          ? 'bg-surface shadow-neumorphic-inset' 
+          : 'bg-surface shadow-neumorphic hover:shadow-neumorphic-pressed active:shadow-neumorphic-inset'
+        }
+        ${isRevealed && !isMine && !isFlagged ? getNumberColor() : 'text-primary-dark'}
+        ${isRevealed ? 'animate-reveal' : ''}
+      `}
     >
-      {content}
-    </div>
+      {getCellContent()}
+    </button>
   );
 }
-
-export default memo(Cell);

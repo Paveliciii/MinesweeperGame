@@ -16,36 +16,39 @@ export default function GameOverModal({
   gameTime,
   onNewGame,
 }: GameOverModalProps) {
-  return (    <Dialog open={isVisible} onOpenChange={onClose}>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
+  return (
+    <Dialog open={isVisible} onOpenChange={onClose}>
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center">
-        <div className="bg-white rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4 transform transition-all">
-          <div className="flex flex-col items-center gap-4">
-            <div className="text-4xl mb-2">
+        <div className="bg-surface rounded-2xl p-8 shadow-neumorphic max-w-sm w-full mx-4 transform transition-all animate-reveal">
+          <div className="flex flex-col items-center gap-6">
+            <div className="text-5xl mb-2">
               {isVictory ? "🎉" : "💣"}
             </div>
             
-            <h2 className="text-2xl font-bold text-gray-900">
-              {isVictory ? "Победа!" : "Игра окончена"}
-            </h2>
-              <p className="text-gray-600 text-center">
-              {isVictory
-                ? `Ваше время: ${formatTime(gameTime)}`
-                : "Попробуйте еще раз!"}
-            </p>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-primary-dark mb-2">
+                {isVictory ? "Победа!" : "Игра окончена"}
+              </h2>
+              <p className="text-primary">
+                {isVictory
+                  ? `Ваше время: ${formatTime(gameTime)}`
+                  : "Попробуйте еще раз!"}
+              </p>
+            </div>
             
-            <div className="flex gap-3 mt-4">
+            <div className="flex gap-4 w-full">
               <button
                 onClick={onNewGame}
-                className="px-4 py-2 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
+                className="flex-1 px-6 py-3 bg-surface text-primary-dark rounded-xl font-medium shadow-neumorphic hover:shadow-neumorphic-pressed active:shadow-neumorphic-inset transition-all duration-200"
               >
-                Новая игра 🔄
+                Новая игра
               </button>
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-xl font-medium hover:bg-gray-300 transition-colors"
+                className="flex-1 px-6 py-3 bg-surface text-primary-light rounded-xl font-medium shadow-neumorphic hover:shadow-neumorphic-pressed active:shadow-neumorphic-inset transition-all duration-200"
               >
-                Закрыть ✕
+                Закрыть
               </button>
             </div>
           </div>
