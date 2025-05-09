@@ -130,19 +130,19 @@ body {
   cursor: pointer;
   user-select: none;
   border-radius: 4px;
-  background-color: var(--tg-theme-secondary-bg-color, #454545);
-  color: var(--tg-theme-text-color, #ffffff);
-  border: 2px solid var(--tg-theme-button-color, #2ea6ff);
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid #cccccc;
   transition: all 0.2s ease;
 }
 
 .cell.revealed {
-  background-color: var(--tg-theme-bg-color, #303030);
-  border-color: var(--tg-theme-hint-color, #666666);
+  background-color: #f0f0f0;
+  border-color: #cccccc;
 }
 
 .cell.flagged {
-  background-color: var(--tg-theme-secondary-bg-color, #454545);
+  background-color: #ffffff;
 }
 
 .cell.mine {
@@ -151,19 +151,18 @@ body {
 }
 
 .cell:not(.revealed):not(.mine):hover {
-  background-color: var(--tg-theme-button-color, #2ea6ff);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background-color: #e0e0e0;
 }
 
 /* Стили для чисел */
-.cell[data-mines="1"] { color: #4a9eff; }
-.cell[data-mines="2"] { color: #44ff44; }
-.cell[data-mines="3"] { color: #ff4444; }
-.cell[data-mines="4"] { color: #9f44ff; }
-.cell[data-mines="5"] { color: #ff9d44; }
-.cell[data-mines="6"] { color: #44fff9; }
-.cell[data-mines="7"] { color: #ff44c3; }
-.cell[data-mines="8"] { color: #fff744; }
+.cell[data-mines="1"] { color: #0066ff; }
+.cell[data-mines="2"] { color: #00aa00; }
+.cell[data-mines="3"] { color: #ff0000; }
+.cell[data-mines="4"] { color: #000099; }
+.cell[data-mines="5"] { color: #aa0000; }
+.cell[data-mines="6"] { color: #00aaaa; }
+.cell[data-mines="7"] { color: #aa00aa; }
+.cell[data-mines="8"] { color: #666666; }
 
 /* Modal styles */
 .modal {
