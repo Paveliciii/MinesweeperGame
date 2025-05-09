@@ -101,7 +101,7 @@ body {
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: color-mix(in srgb, var(--tg-theme-bg-color) 97%, var(--tg-theme-button-color));
+  background: transparent;
   border: 1px solid color-mix(in srgb, var(--tg-theme-button-color) 15%, transparent);
   border-radius: 8px;
   box-shadow: 
@@ -167,11 +167,8 @@ body {
 }
 
 .cell.flag {
-  background: linear-gradient(135deg, 
-    color-mix(in srgb, var(--tg-theme-button-color) 90%, var(--tg-theme-bg-color)),
-    color-mix(in srgb, var(--tg-theme-button-color) 70%, var(--tg-theme-bg-color))
-  );
-  color: var(--tg-theme-button-text-color);
+  background: color-mix(in srgb, var(--tg-theme-bg-color) 97%, var(--tg-theme-button-color));
+  color: var(--tg-theme-text-color);
 }
 
 /* Стили для цифр в ячейках */
@@ -201,6 +198,18 @@ body {
   text-shadow: none !important;
   filter: none !important;
   -webkit-filter: none !important;
+}
+
+.cell span[class*="animate-bounce-in"] {
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* Упрощенный фон для ячеек с флажками */
+.cell span[class*="animate-bounce-in"] {
+  background: none !important;
+  color: inherit !important;
 }
 
 .game-board {
@@ -260,7 +269,7 @@ body {
 }
 
 .cell.flagged::before {
-  background: linear-gradient(45deg, rgba(255,200,100,0.3), rgba(255,255,255,0.4));
+  background: none;
 }
 
 .status-bar {

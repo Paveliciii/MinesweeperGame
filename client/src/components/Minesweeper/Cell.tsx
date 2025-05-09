@@ -5,7 +5,7 @@ export default function Cell({
   onClick, onRightClick 
 }: CellProps) {  const getCellContent = () => {    if (isFlagged) {
       return (
-        <span className="transform transition-all duration-300 animate-bounce-in">
+        <span className="transform transition-all duration-200 animate-bounce-in" style={{ fontSize: '1.1em' }}>
           🚩
         </span>
       );
@@ -39,19 +39,18 @@ export default function Cell({
       'transition-all duration-300',
       'cursor-pointer',
       'select-none',
-      'animate-scale-in',
-      'backdrop-blur-sm'
+      'animate-scale-in'
     ];    if (isRevealed) {
       if (isMine) {
         baseClasses.push(
-          'bg-gradient-to-br from-rose-500/20 to-rose-600/30',
+          'bg-rose-500/20',
           'shadow-inner',
           'text-rose-400',
           'border-rose-500/30'
         );
       } else {
         baseClasses.push(
-          'bg-gradient-to-br from-white/5 to-white/10',
+          'bg-white/5',
           'shadow-inner',
           mineCount > 0 ? getNumberColor(mineCount) : 'text-white/60',
           'border-white/20'
@@ -59,12 +58,12 @@ export default function Cell({
       }
     } else {
       baseClasses.push(
-        'bg-gradient-to-br from-white/10 to-transparent',
-        'hover:from-white/15 hover:to-white/5',
+        'bg-white/10',
+        'hover:bg-white/15',
         'shadow-lg shadow-black/5',
         'hover:shadow-xl hover:shadow-black/10',
         'active:shadow-inner',
-        'active:from-white/5 active:to-transparent',
+        'active:bg-white/5',
         'active:transform active:scale-95',
         'border-white/20'
       );
