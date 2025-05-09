@@ -2,36 +2,34 @@ import { Dialog } from "@/components/ui/dialog";
 import { formatTime } from "@/lib/minesweeperUtils";
 
 interface GameOverModalProps {
-  isOpen: boolean;
+  isVisible: boolean;
   onClose: () => void;
-  gameWon: boolean;
+  isVictory: boolean;
   gameTime: number;
   onNewGame: () => void;
 }
 
 export default function GameOverModal({
-  isOpen,
+  isVisible,
   onClose,
-  gameWon,
+  isVictory,
   gameTime,
   onNewGame,
 }: GameOverModalProps) {
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+  return (    <Dialog open={isVisible} onOpenChange={onClose}>
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="bg-white rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4 transform transition-all">
           <div className="flex flex-col items-center gap-4">
             <div className="text-4xl mb-2">
-              {gameWon ? "🎉" : "💣"}
+              {isVictory ? "🎉" : "💣"}
             </div>
             
             <h2 className="text-2xl font-bold text-gray-900">
-              {gameWon ? "Победа!" : "Игра окончена"}
+              {isVictory ? "Победа!" : "Игра окончена"}
             </h2>
-            
-            <p className="text-gray-600 text-center">
-              {gameWon
+              <p className="text-gray-600 text-center">
+              {isVictory
                 ? `Ваше время: ${formatTime(gameTime)}`
                 : "Попробуйте еще раз!"}
             </p>
