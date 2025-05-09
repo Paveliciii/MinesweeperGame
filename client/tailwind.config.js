@@ -4,7 +4,8 @@ module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
-  ],  theme: {
+  ],
+  theme: {
     extend: {
       borderRadius: {
         lg: "var(--radius)",
@@ -20,6 +21,21 @@ module.exports = {
           button: "var(--tg-theme-button-color)",
           "button-text": "var(--tg-theme-button-text-color)",
           "secondary-bg": "var(--tg-theme-secondary-bg-color)"
+        },
+        cell: {
+          unrevealed: "var(--tg-theme-secondary-bg-color, #e0e0e0)",
+          revealed: "color-mix(in srgb, var(--tg-theme-bg-color) 80%, transparent)",
+          hover: "color-mix(in srgb, var(--tg-theme-button-color) 10%, var(--tg-theme-secondary-bg-color))",
+          number: {
+            "1": "#2563eb", // синий
+            "2": "#059669", // зеленый
+            "3": "#dc2626", // красный
+            "4": "#4f46e5", // фиолетовый
+            "5": "#b91c1c", // темно-красный
+            "6": "#0d9488", // бирюзовый
+            "7": "#000000", // черный
+            "8": "#4b5563"  // серый
+          }
         },
         background: "var(--tg-theme-bg-color, hsl(var(--background)))",
         foreground: "var(--tg-theme-text-color, hsl(var(--foreground)))",
@@ -66,13 +82,22 @@ module.exports = {
         ring: "hsl(var(--ring))",
       },
       boxShadow: {
-        'neumorphic': '5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff',
-        'neumorphic-inset': 'inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff',
-        'neumorphic-pressed': 'inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff',
-        'glass': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        'glass-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        'button': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'button-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'neumorphic': 'var(--shadow-elevation-low)',
+        'neumorphic-inset': 'var(--shadow-elevation-medium)',
+        'neumorphic-pressed': 'var(--shadow-elevation-high)',
+        'glass': '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
+        'glass-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.25)',
+        'button': '0 1px 3px 0 rgba(0, 0, 0, 0.2)',
+        'button-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.25)',
+        'inner-sm': 'inset 0 1px 2px rgba(0, 0, 0, 0.1)',
+        'inner-md': 'inset 0 2px 4px rgba(0, 0, 0, 0.15)',
+        'inner-lg': 'inset 0 4px 6px rgba(0, 0, 0, 0.2)',
+        'glow-sm': '0 0 10px rgba(var(--tg-theme-button-color-rgb), 0.1)',
+        'glow-md': '0 0 15px rgba(var(--tg-theme-button-color-rgb), 0.15)',
+        'glow-lg': '0 0 20px rgba(var(--tg-theme-button-color-rgb), 0.2)',
+        'float-sm': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+        'float-md': '0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12)',
+        'float-lg': '0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1)',
       },
       backdropBlur: {
         'glass': '8px',
@@ -80,6 +105,9 @@ module.exports = {
       backgroundImage: {
         'gradient-glass': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
         'gradient-button': 'linear-gradient(135deg, var(--tg-theme-button-color, #3b82f6), rgba(59, 130, 246, 0.9))',
+        'gradient-fade': 'linear-gradient(180deg, rgba(var(--tg-theme-button-color-rgb), 0.1) 0%, rgba(var(--tg-theme-button-color-rgb), 0) 100%)',
+        'gradient-radial': 'radial-gradient(circle, rgba(var(--tg-theme-button-color-rgb), 0.1) 0%, rgba(var(--tg-theme-button-color-rgb), 0) 100%)',
+        'gradient-shine': 'linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%)',
       },
       keyframes: {
         'accordion-down': {
@@ -99,7 +127,7 @@ module.exports = {
           '50%': { transform: 'scale(0.95)' },
         },
         'scale-in': {
-          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '0%': { transform: 'scale(0.9)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' }
         },
         'slide-up': {
@@ -109,6 +137,22 @@ module.exports = {
         'fade-in': {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' }
+        },
+        'bounce-in': {
+          '0%': {
+            transform: 'scale(0)',
+            opacity: '0'
+          },
+          '50%': {
+            transform: 'scale(1.2)',
+          },
+          '70%': {
+            transform: 'scale(0.9)',
+          },
+          '100%': {
+            transform: 'scale(1)',
+            opacity: '1'
+          }
         }
       },
       animation: {
@@ -118,7 +162,8 @@ module.exports = {
         'press': 'press 0.2s ease-in-out',
         'scale-in': 'scale-in 0.2s ease-out',
         'slide-up': 'slide-up 0.3s ease-out',
-        'fade-in': 'fade-in 0.2s ease-out'
+        'fade-in': 'fade-in 0.2s ease-out',
+        'bounce-in': 'bounce-in 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)'
       },
     },
   },

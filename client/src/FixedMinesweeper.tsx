@@ -684,11 +684,15 @@ function FixedMinesweeper() {
       {isMobile && (
         <div style={{ 
           marginBottom: '1rem',
-          padding: '0.5rem',
-          borderRadius: '0.5rem',
-          backgroundColor: '#f3f4f6',
+          padding: '0.75rem 1rem',
+          borderRadius: '1rem',
+          background: 'color-mix(in srgb, var(--tg-theme-bg-color) 95%, var(--tg-theme-button-color))',
+          border: '1px solid color-mix(in srgb, var(--tg-theme-button-color) 10%, transparent)',
+          backdropFilter: 'blur(8px)',
           fontSize: '0.875rem',
-          textAlign: 'center'
+          textAlign: 'center',
+          color: 'var(--tg-theme-text-color)',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
         }}>
           {isFlagMode ? 
             "Нажмите на ячейку, чтобы поставить/убрать флажок" :
@@ -698,12 +702,18 @@ function FixedMinesweeper() {
 
       {gameState.gameOver && (
         <div style={{ 
-          marginBottom: '1рем', 
-          padding: '0.5rem 1rem',
-          borderRadius: '0.5rem',
-          backgroundColor: gameState.gameWon ? '#4ade80' : '#ef4444',
-          color: 'white',
-          fontWeight: 'bold'
+          marginBottom: '1rem', 
+          padding: '0.75rem 1.5rem',
+          borderRadius: '1rem',
+          background: gameState.gameWon 
+            ? 'linear-gradient(135deg, #4ade80, color-mix(in srgb, #4ade80 90%, black))'
+            : 'linear-gradient(135deg, #ef4444, color-mix(in srgb, #ef4444 90%, black))',
+          color: 'var(--tg-theme-button-text-color)',
+          fontWeight: 'bold',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(8px)',
+          animation: 'reveal 0.3s ease-out'
         }}>
           {gameState.gameWon ? 'Победа! 🎉' : 'Игра окончена! 💣'}
         </div>
@@ -719,32 +729,56 @@ function FixedMinesweeper() {
       </div>
 
       <Dialog open={isGameOverModalVisible} onOpenChange={setIsGameOverModalVisible}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent 
+          className="sm:max-w-md border-0" 
+          style={{
+            background: 'color-mix(in srgb, var(--tg-theme-bg-color) 95%, var(--tg-theme-button-color))',
+            borderRadius: '1.5rem',
+            border: '1px solid color-mix(in srgb, var(--tg-theme-button-color) 10%, transparent)',
+            backdropFilter: 'blur(12px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+          }}
+        >
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-center">
+            <DialogTitle className="text-2xl font-bold text-center" style={{ color: 'var(--tg-theme-text-color)' }}>
               {gameState.gameWon ? '🎉 Поздравляем! Вы победили!' : '💥 Игра окончена!'}
             </DialogTitle>
           </DialogHeader>
-          <div className="text-center py-4">
-            <p className="mb-2">
+          <div className="text-center py-6" style={{ color: 'var(--tg-theme-text-color)' }}>
+            <p className="mb-4 text-lg">
               {gameState.gameWon 
                 ? 'Вы успешно нашли все мины!' 
                 : 'Вы подорвались на мине. Попробуйте еще раз!'}
             </p>
-            <p className="font-bold">Время: {time}</p>
+            <p className="text-xl font-semibold" style={{ 
+              background: 'linear-gradient(135deg, var(--tg-theme-button-color), color-mix(in srgb, var(--tg-theme-button-color) 80%, transparent))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              padding: '0.5rem'
+            }}>
+              Время: {time}
+            </p>
           </div>
-          <DialogFooter className="flex justify-center gap-2">
+          <DialogFooter className="flex justify-center gap-3">
             <Button
               onClick={showDifficultySelection}
-              className="w-full"
-              variant="default"
+              className="w-full text-lg py-6 rounded-xl"
+              style={{
+                background: 'linear-gradient(135deg, var(--tg-theme-button-color), color-mix(in srgb, var(--tg-theme-button-color) 90%, black))',
+                color: 'var(--tg-theme-button-text-color)',
+                border: '1px solid color-mix(in srgb, var(--tg-theme-button-color) 20%, transparent)'
+              }}
             >
               Новая игра
             </Button>
             <Button
               onClick={() => setIsGameOverModalVisible(false)}
-              className="w-full"
-              variant="secondary"
+              className="w-full text-lg py-6 rounded-xl"
+              style={{
+                background: 'color-mix(in srgb, var(--tg-theme-bg-color) 97%, var(--tg-theme-button-color))',
+                color: 'var(--tg-theme-text-color)',
+                border: '1px solid color-mix(in srgb, var(--tg-theme-button-color) 10%, transparent)'
+              }}
             >
               Закрыть
             </Button>

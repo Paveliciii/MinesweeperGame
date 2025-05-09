@@ -3,10 +3,15 @@ import type { CellProps } from "../../types/game";
 export default function Cell({ 
   x, y, isRevealed, isMine, isFlagged, mineCount, gameOver,
   onClick, onRightClick 
-}: CellProps) {  const getCellContent = () => {
-    if (isFlagged) {
+}: CellProps) {  const getCellContent = () => {    if (isFlagged) {
       return (
-        <span className="transform transition-transform duration-200 animate-scale-in" style={{ animationDelay: '50ms' }}>
+        <span 
+          className="transform transition-all duration-300 animate-bounce-in"
+          style={{ 
+            animationDelay: '50ms',
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+          }}
+        >
           🚩
         </span>
       );
@@ -14,9 +19,16 @@ export default function Cell({
     if (!isRevealed) return null;
     if (isMine) {
       return (
-        <span className="transform transition-transform duration-200 animate-scale-in" style={{ animationDelay: '50ms' }}>
+        <span 
+          className="transform transition-all duration-300 animate-bounce-in"
+          style={{ 
+            animationDelay: '50ms',
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+          }}
+        >
           💣
-        </span>      );
+        </span>
+      );
     }
     if (mineCount > 0) {
       return (
@@ -29,44 +41,45 @@ export default function Cell({
       );
     }
     return null;
-  };
-  const getClassNames = () => {
+  };  const getClassNames = () => {
     const baseClasses = [
       'w-8 h-8',
       'flex items-center justify-center',
-      'text-sm font-medium',
-      'border border-white/10',
-      'transition-all duration-200',
+      'text-sm font-bold',
+      'border',
+      'border-white/10',
+      'rounded-lg',
+      'transition-all duration-300',
       'cursor-pointer',
       'select-none',
-      'animate-scale-in'
-    ];
-
-    if (isRevealed) {
+      'animate-scale-in',
+      'backdrop-blur-sm'
+    ];    if (isRevealed) {
       if (isMine) {
         baseClasses.push(
-          'bg-gradient-glass',
-          'backdrop-blur-glass',
-          'shadow-glass',
-          'text-rose-400'
+          'bg-gradient-to-br from-rose-500/20 to-rose-600/30',
+          'shadow-inner',
+          'text-rose-400',
+          'border-rose-500/30'
         );
       } else {
         baseClasses.push(
-          'bg-gradient-glass',
-          'backdrop-blur-glass',
-          'shadow-glass',
-          mineCount > 0 ? getNumberColor(mineCount) : 'text-white/60'
+          'bg-gradient-to-br from-white/5 to-white/10',
+          'shadow-inner',
+          mineCount > 0 ? getNumberColor(mineCount) : 'text-white/60',
+          'border-white/20'
         );
       }
     } else {
       baseClasses.push(
-        'bg-gradient-glass',
-        'backdrop-blur-glass',
-        'shadow-button',
-        'hover:shadow-button-hover',
-        'active:shadow-glass',
-        'active:transform',
-        'active:scale-95'
+        'bg-gradient-to-br from-white/10 to-transparent',
+        'hover:from-white/15 hover:to-white/5',
+        'shadow-lg shadow-black/5',
+        'hover:shadow-xl hover:shadow-black/10',
+        'active:shadow-inner',
+        'active:from-white/5 active:to-transparent',
+        'active:transform active:scale-95',
+        'border-white/20'
       );
     }
 
@@ -80,15 +93,14 @@ export default function Cell({
 
     return baseClasses.join(' ');
   };
-
   const getNumberColor = (number: number) => {
     const colors = {
-      1: 'text-blue-400',
-      2: 'text-green-400',
+      1: 'text-sky-400',
+      2: 'text-emerald-400',
       3: 'text-rose-400',
-      4: 'text-purple-400',
-      5: 'text-yellow-400',
-      6: 'text-pink-400',
+      4: 'text-violet-400',
+      5: 'text-amber-400',
+      6: 'text-fuchsia-400',
       7: 'text-indigo-400',
       8: 'text-orange-400'
     };
