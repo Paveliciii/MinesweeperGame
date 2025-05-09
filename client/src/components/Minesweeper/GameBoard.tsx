@@ -24,6 +24,9 @@ function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps)
     return null;
   }
 
+  // Определяем размер поля для стилей
+  const boardSize = `${gameState.width}x${gameState.height}`;
+
   // Создаем массив ячеек
   const cells = [];
   
@@ -51,17 +54,17 @@ function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps)
           }
         }
       }
-      
+
       cells.push(
         <Cell
           key={`${x}-${y}`}
           x={x}
           y={y}
           isRevealed={isRevealed}
-          isMine={isMine}
           isFlagged={isFlagged}
+          isMine={isMine}
           mineCount={mineCount}
-          gameOver={gameState.gameOver ?? false}
+          gameOver={gameState.gameOver}
           onClick={() => onCellClick(x, y)}
           onRightClick={(e) => onCellRightClick(x, y, e)}
         />
@@ -69,16 +72,27 @@ function GameBoard({ gameState, onCellClick, onCellRightClick }: GameBoardProps)
     }
   }
 
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    overflow: 'auto',
+    WebkitOverflowScrolling: 'touch' as const
+  };
+
   return (
-    <div 
-      className="game-board"
-      style={{ 
-        gridTemplateColumns: `repeat(${gameState.width}, minmax(0, 1fr))`,
-        width: `${gameState.width * 2.8}rem`,
-        height: `${gameState.height * 2.8}rem`,
-      }}
-    >
-      {cells}
+    <div style={containerStyle}>
+      <div 
+        className="game-board"
+        data-size={boardSize}
+        style={{
+          gridTemplateColumns: `repeat(${gameState.width}, 1fr)`,
+          width: 'fit-content',
+          maxWidth: '100%'
+        }}
+      >
+        {cells}
+      </div>
     </div>
   );
 }
