@@ -47,11 +47,22 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
-  try {
-    const urlParams = new URLSearchParams(initData.toString());
+  try {    // Convert initData to string if it's a Buffer or array
+    const initDataStr = Buffer.isBuffer(initData) ? initData.toString() : initData.toString();
+    
+    // Parse the init data
+    const urlParams = new URLSearchParams(initDataStr);
     const hash = urlParams.get('hash');
+    
+    if (!hash) {
+      console.error('No hash provided in init data');
+      return res.status(401).json({ error: 'No hash provided' });
+    }
+    
+    // Remove hash from the data before checking
     urlParams.delete('hash');
 
+    // Sort in correct order and join with \n
     const dataCheckString = Array.from(urlParams.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, value]) => `${key}=${value}`)
@@ -59,18 +70,25 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
 
     console.log('Data Check String:', dataCheckString);
 
-    const secret = createHash('sha256')
+    // Create secret key from bot token
+    const secretKey = createHash('sha256')
       .update(process.env.BOT_TOKEN)
       .digest();
 
-    const hmac = createHmac('sha256', secret)
+    // Calculate HMAC
+    const hmac = createHmac('sha256', secretKey)
       .update(dataCheckString)
       .digest('hex');
 
     console.log('Generated HMAC:', hmac);
-    console.log('Received Hash:', hash);
-
-    if (hmac === hash) {
+    console.log('Received Hash:', hash);    // Дополнительное логирование для отладки
+    console.log('Bot Token length:', process.env.BOT_TOKEN?.length);
+    console.log('Secret Key length:', secretKey.length);
+    console.log('HMAC vs Hash:');
+    console.log('HMAC:', hmac);
+    console.log('Hash:', hash);
+    
+    if (hmac.toLowerCase() === hash.toLowerCase()) {
       console.log('Telegram data validation successful');
       // Парсим данные пользователя из initData
       const userDataStr = urlParams.get('user') || '{}';
@@ -79,11 +97,20 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
       next();
     } else {
       console.error('Hash validation failed');
-      res.status(401).json({ error: 'Unauthorized' });
+      console.error('Data length:', dataCheckString.length);
+      console.error('Data bytes:', Buffer.from(dataCheckString).length);
+      res.status(401).json({ 
+        error: 'Unauthorized',
+        details: 'HMAC validation failed. Please ensure you are accessing through Telegram WebApp.'
+      });
     }
   } catch (e) {
     console.error('Validation error:', e);
-    res.status(401).json({ error: 'Invalid data' });
+    console.error('Error details:', e instanceof Error ? e.message : String(e));
+    res.status(401).json({ 
+      error: 'Invalid data',
+      details: e instanceof Error ? e.message : 'Unknown error'
+    });
   }
 };
 
