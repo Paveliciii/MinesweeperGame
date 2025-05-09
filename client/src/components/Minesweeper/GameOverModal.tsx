@@ -1,3 +1,4 @@
+import { formatTime } from "../../lib/minesweeperUtils";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,7 @@ import { Button } from "../../components/ui/button";
 interface GameOverModalProps {
   isVisible: boolean;
   isVictory: boolean;
-  gameTime: string;
+  gameTime: number;
   onClose: () => void;
   onNewGame: () => void;
 }
@@ -31,11 +32,10 @@ export default function GameOverModal({
           <DialogTitle className="text-xl font-bold">
             {isVictory ? "🎉 Поздравляем! Вы победили!" : "💥 Вы проиграли!"}
           </DialogTitle>
-        </DialogHeader>
-        <div className="text-center py-4">
+        </DialogHeader>        <div className="text-center py-4">
           {isVictory && (
             <div className="mb-4">
-              <p>Ваше время: <span className="font-bold">{gameTime}</span></p>
+              <p>Ваше время: <span className="font-bold">{formatTime(gameTime)}</span></p>
             </div>
           )}
           <p>

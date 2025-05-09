@@ -1,5 +1,5 @@
 import { useMinesweeper } from './hooks/useMinesweeper';
-import { GameBoard } from './components/Minesweeper/GameBoard';
+import GameBoard from './components/Minesweeper/GameBoard';
 import './App.css';
 
 function App() {

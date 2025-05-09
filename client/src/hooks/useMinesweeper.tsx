@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { placeMines, countAdjacentMines, formatTime } from '../lib/minesweeperUtils';
+import { placeMines, countAdjacentMines } from '../lib/minesweeperUtils';
 
 // Difficulty settings
 const difficulties = {
@@ -24,37 +24,49 @@ export interface GameState {
 }
 
 export function useMinesweeper() {
-  const [gameState, setGameState] = useState<GameState>({
-    width: 0,
-    height: 0,
-    mineCount: 0,
-    remainingMines: 0,
-    gameOver: false,
-    gameWon: false,
-    showDifficultySelection: true,
-    mines: [],
-    revealed: [],
-    flags: [],
-    isFlagMode: false
+  // Game state
+  const [gameState, setGameState] = useState<GameState>(() => {
+    // Инициализируем с размерами по умолчанию
+    const width = 10;
+    const height = 10;
+    const mineCount = 15;
+    
+    // Создаем пустые массивы с правильными размерами (используя 1-индексированную сетку)
+    const mines = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
+    const revealed = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
+    const flags = Array(width + 2).fill(null).map(() => Array(height + 2).fill(false));
+    
+    return {
+      width,
+      height,
+      mineCount,
+      remainingMines: mineCount,
+      gameOver: false,
+      gameWon: false,
+      isFlagMode: false,
+      showDifficultySelection: true,
+      mines,
+      revealed,
+      flags
+    };
   });
 
-  const [gameStarted, setGameStarted] = useState(false);
-  const [startTime, setStartTime] = useState<number | null>(null);
-  const [time, setTime] = useState<number>(0);
-
   // Time tracking
+  const [gameStarted, setGameStarted] = useState(false);
+  const [startTime, setStartTime] = useState(0);
+  const [time, setTime] = useState(0);
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
 
   // UI state
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
-  const [gameResult, setGameResult] = useState({ isVictory: false, gameTime: '00:00' });
+  const [gameResult, setGameResult] = useState<{ isVictory: boolean, gameTime: number }>({ isVictory: false, gameTime: 0 });
 
   // Timer update function
   const updateTimer = useCallback(() => {
     if (!gameStarted || gameState.gameOver) return;
     
-    const currentTime = Date.now() - (startTime || 0);
+    const currentTime = Date.now() - startTime;
     setTime(currentTime);
   }, [gameStarted, gameState.gameOver, startTime]);
 
@@ -143,11 +155,9 @@ export function useMinesweeper() {
     }));
     stopTimer();
     
-    // Set game result data for modal
-    const gameTime = formatTime(time);
     setGameResult({
       isVictory: win,
-      gameTime
+      gameTime: time
     });
     
     // Show game over modal
@@ -502,31 +512,19 @@ export function useMinesweeper() {
       return;
     }
     
-    // Handle first click
+    // Handle first click - initialize mines
     if (!gameStarted) {
       setGameStarted(true);
       const newStartTime = Date.now();
       setStartTime(newStartTime);
-
-      // Place mines avoiding first click
-      const newMines = Array(gameState.width + 1).fill(null)
-        .map(() => Array(gameState.height + 1).fill(false));
-
-      let minesToPlace = gameState.mineCount;
-      while (minesToPlace > 0) {
-        const mx = Math.floor(Math.random() * gameState.width) + 1;
-        const my = Math.floor(Math.random() * gameState.height) + 1;
-        
-        // Avoid placing mine at click position or adjacent cells
-        if (!newMines[mx][my] && 
-            (Math.abs(mx - x) > 1 || Math.abs(my - y) > 1)) {
-          newMines[mx][my] = true;
-          minesToPlace--;
-        }
-      }
-
-      setGameState(prev => ({
-        ...prev,
+      startTimer();
+      
+      // Place mines avoiding first click and its surroundings
+      const newMines = [...gameState.mines.map(row => [...row])];
+      placeMines(newMines, gameState.width, gameState.height, gameState.mineCount, x, y);
+      
+      setGameState(prevState => ({
+        ...prevState,
         mines: newMines
       }));
     }
@@ -563,7 +561,7 @@ export function useMinesweeper() {
 
   return {
     gameState,
-    time: formatTime(time),
+    time,
     isHelpVisible,
     isGameOverModalVisible,
     gameResult,

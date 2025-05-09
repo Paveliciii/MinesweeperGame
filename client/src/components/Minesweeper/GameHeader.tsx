@@ -1,4 +1,5 @@
 import { useMobile } from "../../hooks/use-mobile";
+import { formatTime } from "../../lib/minesweeperUtils";
 
 interface GameHeaderProps {
   minesRemaining: number;
@@ -24,8 +25,7 @@ export default function GameHeader({
         <div id="mines-counter" className="font-bold text-lg">
           Mines: {minesRemaining}
         </div>
-        <div id="timer" className="font-bold text-lg">
-          {time}
+        <div id="timer" className="font-bold text-lg">          {formatTime(time)}
         </div>
       </div>
       

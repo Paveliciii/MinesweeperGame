@@ -56,6 +56,7 @@ function FixedMinesweeper() {
   const [isFlagMode, setIsFlagMode] = useState(false);
   const [time, setTime] = useState('00:00');
   const [intervalId, setIntervalId] = useState<number | null>(null);
+  // Removed unused startTime state
   const [touchTimeout, setTouchTimeout] = useState<number | null>(null);
   const [touchStartPos, setTouchStartPos] = useState<{ x: number, y: number } | null>(null);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
@@ -161,7 +162,7 @@ function FixedMinesweeper() {
   const startTimer = () => {
     if (intervalId === null) {
       const start = Date.now();
-      setStartTime(start);
+      // Removed unused setStartTime call
       const id = window.setInterval(() => {
         setTime(formatTime(Date.now() - start));
       }, 1000);
@@ -562,21 +563,7 @@ function FixedMinesweeper() {
   };
 
   // Добавляем функцию для отправки результатов в Telegram
-  const sendScoreToTelegram = useCallback((won: boolean, time: string) => {
-    if (window.Telegram?.WebApp) {
-      const message = won 
-        ? `🎉 Победа! Время: ${time}`
-        : `💣 Игра окончена. Время: ${time}`;
-      
-      window.Telegram.WebApp.sendData?.(JSON.stringify({
-        event: 'gameOver',
-        won,
-        time,
-        difficulty: `${gameState.width}x${gameState.height}`,
-        mineCount: gameState.mineCount
-      }));
-    }
-  }, [gameState.width, gameState.height, gameState.mineCount]);
+  // Removed unused sendScoreToTelegram function
 
   useEffect(() => {
     // Расширяем окно Telegram WebApp при запуске
