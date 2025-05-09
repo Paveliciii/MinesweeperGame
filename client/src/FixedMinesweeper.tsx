@@ -671,7 +671,8 @@ function FixedMinesweeper() {
               title={isFlagMode ? "Режим открытия ячеек" : "Режим установки флажков"}
               style={{
                 backgroundColor: isFlagMode ? '#ef4444' : '#3b82f6',
-                marginRight: '0.5rem'
+                marginRight: '0.5rem',
+                textShadow: 'none'
               }}
             >
               🚩
