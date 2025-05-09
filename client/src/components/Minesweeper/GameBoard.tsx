@@ -28,18 +28,22 @@ export default function GameBoard({ gameState, onCellClick, onCellRightClick }: 
     }
   };
 
-  const cellSize = useMemo(getCellSize, [gameState.width]);
-  const gridStyle = useMemo(() => ({
+  const cellSize = useMemo(getCellSize, [gameState.width]);  const gridStyle = useMemo(() => ({
     gridTemplateColumns: `repeat(${gameState.width}, minmax(0, 1fr))`,
-    gap: '1.5px',
+    gap: '2px',
     width: '100%',
-    maxWidth: `${gameState.width * 36}px`, // чуть меньше для компактности
+    maxWidth: `${gameState.width * 36}px`,
+    padding: '8px',
+    borderRadius: '16px',
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
+    backdropFilter: 'blur(8px)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
   }), [gameState.width, cellSize]);
 
-  return (
-    <div className="flex justify-center items-center px-1 py-2">
+  return (    <div className="flex justify-center items-center px-2 py-4">
       <div
-        className="grid bg-gradient-to-b from-[#23272f] to-[#1a1d23] rounded-lg p-1.5 border border-white/10"
+        className="grid animate-fade-in"
         style={gridStyle}
       >
         {Array.from({ length: gameState.height }, (_, y) =>
