@@ -212,6 +212,24 @@ body {
   color: inherit !important;
 }
 
+.cell span {
+  transform: none;
+  filter: none;
+  -webkit-filter: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: none;
+  background: none;
+  text-shadow: none;
+}
+
+/* Reset any possible animations */
+.cell span {
+  animation: none !important;
+  transition: none !important;
+}
+
 .game-board {
   display: grid;
   gap: 4px;

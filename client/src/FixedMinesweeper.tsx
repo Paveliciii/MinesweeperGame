@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Flag, Bomb } from 'lucide-react';
 
 // Extend the Telegram WebApp type
 declare global {
@@ -616,15 +617,15 @@ function FixedMinesweeper() {
       
       // Определяем класс и содержимое ячейки
       let cellClass = "cell";
-      let content = "";
+      let content: React.ReactNode = "";
       
       if (isFlagged) {
-        content = "🚩";
+        content = <Flag size={24} />;
         cellClass += " flagged";
       } else if (isRevealed) {
         cellClass += " revealed";
         if (isMine) {
-          content = "💣";
+          content = <Bomb size={24} />;
           cellClass += " mine";
         } else if (mineCount > 0) {
           content = mineCount.toString();
@@ -634,7 +635,7 @@ function FixedMinesweeper() {
       
       // Показываем мины в конце игры
       if (gameState.gameOver && isMine && !isFlagged) {
-        content = "💣";
+        content = <Bomb size={24} />;
         cellClass = "cell mine revealed";
       }
       
@@ -662,7 +663,7 @@ function FixedMinesweeper() {
     }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Сапер</h1>
       <div className="header">
-        <div style={{ fontWeight: 'bold' }}>🚩 Мины: {gameState.remainingMines}</div>
+        <div style={{ fontWeight: 'bold' }}><Flag size={16} /> Мины: {gameState.remainingMines}</div>
         <div style={{ fontWeight: 'bold' }}>⏱️ {time}</div>
         <div className="controls">
           {isMobile && (
@@ -675,7 +676,7 @@ function FixedMinesweeper() {
                 textShadow: 'none'
               }}
             >
-              🚩
+              <Flag size={16} />
             </button>
           )}
           <button onClick={showDifficultySelection} title="Новая игра">🔄</button>

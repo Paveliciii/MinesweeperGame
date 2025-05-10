@@ -1,26 +1,26 @@
 import type { CellProps } from "../../types/game";
+import { Flag, Bomb } from 'lucide-react';
 
 export default function Cell({ 
   x, y, isRevealed, isMine, isFlagged, mineCount, gameOver,
   onClick, onRightClick 
-}: CellProps) {  const getCellContent = () => {    if (isFlagged) {
+}: CellProps) {
+  const getCellContent = () => {
+    if (isFlagged) {
       return (
-        <span className="transform transition-all duration-200 animate-bounce-in" style={{ fontSize: '1.1em' }}>
-          🚩
-        </span>
+        <Flag className="w-5 h-5 text-blue-500 drop-shadow" strokeWidth={2.2} />
       );
     }
-    if (!isRevealed) return null;    if (isMine) {
+    if (!isRevealed) return null;
+    if (isMine) {
       return (
-        <span className="transform transition-all duration-300 animate-bounce-in">
-          💣
-        </span>
+        <Bomb className="w-5 h-5 text-red-500 drop-shadow" strokeWidth={2.2} />
       );
     }
     if (mineCount > 0) {
       return (
         <span 
-          className={`font-medium transform transition-transform duration-200 animate-scale-in ${getNumberColor(mineCount)}`}
+          className={`font-medium transition-transform duration-200 animate-scale-in ${getNumberColor(mineCount)}`}
           style={{ animationDelay: '50ms' }}
         >
           {mineCount}
@@ -28,57 +28,50 @@ export default function Cell({
       );
     }
     return null;
-  };  const getClassNames = () => {
+  };
+
+  const getClassNames = () => {
     const baseClasses = [
       'w-8 h-8',
       'flex items-center justify-center',
       'text-sm font-bold',
       'border',
       'border-white/10',
-      'rounded-lg',
+      'rounded-xl',
       'transition-all duration-300',
       'cursor-pointer',
       'select-none',
-      'animate-scale-in'
-    ];    if (isRevealed) {
+      'bg-gradient-to-br from-gray-100 to-gray-200',
+      'shadow-md',
+      'hover:shadow-lg',
+      'active:scale-95',
+    ];
+    if (isRevealed) {
       if (isMine) {
         baseClasses.push(
-          'bg-rose-500/20',
-          'shadow-inner',
-          'text-rose-400',
-          'border-rose-500/30'
+          'bg-gradient-to-br from-red-600 to-red-800',
+          'shadow-lg',
+          'text-white',
+          'border-red-700'
         );
       } else {
         baseClasses.push(
-          'bg-white/5',
+          'bg-gradient-to-br from-white to-gray-100',
           'shadow-inner',
-          mineCount > 0 ? getNumberColor(mineCount) : 'text-white/60',
-          'border-white/20'
+          mineCount > 0 ? getNumberColor(mineCount) : 'text-gray-400',
+          'border-gray-300',
+          'animate-scale-in'
         );
       }
-    } else {
-      baseClasses.push(
-        'bg-white/10',
-        'hover:bg-white/15',
-        'shadow-lg shadow-black/5',
-        'hover:shadow-xl hover:shadow-black/10',
-        'active:shadow-inner',
-        'active:bg-white/5',
-        'active:transform active:scale-95',
-        'border-white/20'
-      );
+    } else if (isFlagged) {
+      baseClasses.push('bg-gradient-to-br from-gray-100 to-gray-200');
     }
-
-    if (isFlagged) {
-      baseClasses.push('text-tg-button');
-    }
-
     if (gameOver) {
       baseClasses.push('cursor-default', 'opacity-80');
     }
-
     return baseClasses.join(' ');
   };
+
   const getNumberColor = (number: number) => {
     const colors = {
       1: 'text-sky-400',
