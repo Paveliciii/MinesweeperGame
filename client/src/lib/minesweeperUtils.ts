@@ -1,3 +1,5 @@
+import { GameState } from '../types/game';
+
 // Place mines on the board, avoiding the first click and its surroundings
 export function placeMines(
   mines: boolean[][],
@@ -65,4 +67,22 @@ export function formatTime(ms: number): string {
   const remainingSeconds = seconds % 60;
   
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+// Utility function to move a mine to a new location
+export function moveMine(gameState: GameState, x: number, y: number): void {
+  const { mines, width, height } = gameState;
+
+  // Remove the mine from the current location
+  mines[x][y] = false;
+
+  // Find a new location for the mine
+  let newX, newY;
+  do {
+    newX = Math.floor(Math.random() * width);
+    newY = Math.floor(Math.random() * height);
+  } while (mines[newX][newY] || (newX === x && newY === y));
+
+  // Place the mine in the new location
+  mines[newX][newY] = true;
 }

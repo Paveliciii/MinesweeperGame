@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { placeMines, countAdjacentMines } from '../lib/minesweeperUtils';
+import { countAdjacentMines, moveMine } from '../lib/minesweeperUtils';
 
 // Difficulty settings
 const difficulties = {
@@ -52,8 +52,6 @@ export function useMinesweeper() {
   });
 
   // Time tracking
-  const [gameStarted, setGameStarted] = useState(false);
-  const [startTime, setStartTime] = useState(0);
   const [time, setTime] = useState(0);
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
 
@@ -62,23 +60,8 @@ export function useMinesweeper() {
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
   const [gameResult, setGameResult] = useState<{ isVictory: boolean, gameTime: number }>({ isVictory: false, gameTime: 0 });
 
-  // Timer update function
-  const updateTimer = useCallback(() => {
-    if (!gameStarted || gameState.gameOver) return;
-    
-    const currentTime = Date.now() - startTime;
-    setTime(currentTime);
-  }, [gameStarted, gameState.gameOver, startTime]);
-
-  // Start timer
-  const startTimer = useCallback(() => {
-    if (timerInterval) {
-      clearInterval(timerInterval);
-    }
-    
-    const interval = window.setInterval(updateTimer, 1000);
-    setTimerInterval(interval);
-  }, [timerInterval, updateTimer]);
+  // Добавляем проверку для первой клетки
+  const [isFirstClick, setIsFirstClick] = useState(true);
 
   // Stop timer
   const stopTimer = useCallback(() => {
@@ -91,7 +74,6 @@ export function useMinesweeper() {
   // Initialize the game when difficulty changes
   const initializeGame = useCallback((width: number, height: number, mineCount: number) => {
     // Reset game state
-    setGameStarted(false);
     setTime(0);
     stopTimer();
     
@@ -495,14 +477,22 @@ export function useMinesweeper() {
   // Handle cell click
   const handleCellClick = useCallback((x: number, y: number) => {
     if (gameState.gameOver || gameState.flags[x]?.[y]) return;
-    
-    // If clicking on a revealed numbered cell, do a chord click
+
+    if (isFirstClick) {
+      setIsFirstClick(false);
+      if (gameState.mines[x][y]) {
+        // Перемещаем мину, если первая клетка содержит мину
+        moveMine(gameState, x, y);
+      }
+    }
+
+    // Если клик по открытой клетке с числом, выполняем chord click
     if (gameState.revealed[x]?.[y]) {
       handleChordClick(x, y);
       return;
     }
-    
-    // If in flag mode, handle as right click but only if the cell is not revealed
+
+    // Если в режиме флага, обрабатываем как правый клик
     if (gameState.isFlagMode) {
       if (!gameState.revealed[x]?.[y]) {
         handleCellRightClick(x, y);
@@ -511,44 +501,10 @@ export function useMinesweeper() {
       }
       return;
     }
-    
-    // Handle first click - initialize mines
-    if (!gameStarted) {
-      setGameStarted(true);
-      const newStartTime = Date.now();
-      setStartTime(newStartTime);
-      startTimer();
-      
-      // Place mines avoiding first click and its surroundings
-      const newMines = [...gameState.mines.map(row => [...row])];
-      placeMines(newMines, gameState.width, gameState.height, gameState.mineCount, x, y);
-      
-      setGameState(prevState => ({
-        ...prevState,
-        mines: newMines
-      }));
-    }
-    
-    // Check if clicked on mine
-    if (gameState.mines[x]?.[y]) {
-      // Game over - reveal all mines
-      revealAllMines();
-      endGame(false);
-      return;
-    }
-    
-    // Reveal the clicked cell and potentially its neighbors
+
+    // Открываем клетку
     revealCell(x, y);
-  }, [
-    gameState, 
-    gameStarted, 
-    handleChordClick, 
-    handleCellRightClick, 
-    startTimer, 
-    revealAllMines, 
-    endGame, 
-    revealCell
-  ]);
+  }, [gameState, revealAllMines, endGame, checkWinCondition, revealCell, moveMine]);
 
   // Clean up timer on unmount
   useEffect(() => {
