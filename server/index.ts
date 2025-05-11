@@ -105,12 +105,12 @@ const validateTelegramWebAppData = (req: Request, res: Response, next: NextFunct
 // Используем middleware для всех API маршрутов
 app.use('/api', validateTelegramWebAppData);
 
-// Отдаем статические файлы из папки dist/public
-app.use(express.static(path.join(__dirname, '../dist/public')));
+// Обслуживаем статические файлы из папки client/dist
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// Все остальные запросы переправляем на index.html
+// Все остальные запросы перенаправляем на index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/public/index.html'));
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 app.use((req, res, next) => {
